@@ -1,5 +1,7 @@
 import { View, Text, FlatList } from "react-native"
 import { useRepositories } from "../hooks/useRepositories"
+import { RepoCard } from "../components/RepoCard";
+import { Repository } from "../types/repository";
 
 const RepoListScreen = () => {
   const {
@@ -9,24 +11,27 @@ const RepoListScreen = () => {
   } = useRepositories()
 
   const renderLoading = () => <Text>Loading...</Text>
+
   const renderError = () => <Text>Error loading repos</Text>
-  const renderCard = ({ item }: { item: any }) => { // TODO Replace 'any' with the actual type of the repository item
+
+  const renderCard = ({ item }: { item: Repository }) => {
     const {
       name,
       description,
       language,
       stargazers_count,
-      owner, // TODO Extract only avatar and profile url
+      owner,
     } = item
 
     return (
-      <View style={{ padding: 12 }}>
-        <Text>Name: {name}</Text>
-        <Text>Description: {description}</Text>
-        <Text>Language: {language}</Text>
-        <Text>Stars: {stargazers_count}</Text>
-        <Text>Owner: {owner.login}</Text>
-      </View>
+      <RepoCard
+        name={name}
+        description={description}
+        language={language}
+        stars={stargazers_count}
+        owner={{ login: owner.login, avatar_url: owner.avatar_url }}
+        onPress={() => console.log("pressing card", name)}
+      />
     )
   }
 
