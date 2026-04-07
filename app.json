@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "github-repos",
-    "slug": "github-repos",
+    "name": "pink-room-repo-browser",
+    "slug": "pink-room-repo-browser",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
