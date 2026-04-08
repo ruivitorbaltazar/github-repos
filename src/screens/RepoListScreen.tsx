@@ -1,5 +1,6 @@
-import { SafeAreaView } from "react-native-safe-area-context"
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native"
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import { useRepositories } from "../hooks/useRepositories"
 
@@ -7,6 +8,12 @@ import { RepoCard } from "../components/RepoCard"
 import { RepoCardSkeleton } from "../components/RepoCardSkeleton"
 
 import { Repository } from "../types/repository"
+import { RootStackParamList } from "../types/navigation"
+
+type NavigationProp = NativeStackNavigationProp<
+  RootStackParamList,
+  "Repo List"
+>
 
 const RepoListScreen = () => {
   const {
@@ -14,6 +21,8 @@ const RepoListScreen = () => {
     reposAreLoading,
     reposError,
   } = useRepositories()
+
+  const navigation = useNavigation<NavigationProp>()
 
   const renderLoading = () => (
     <>
@@ -66,37 +75,29 @@ const RepoListScreen = () => {
         language={language}
         stars={stargazers_count}
         owner={{ login: owner.login, avatar_url: owner.avatar_url }}
-        onPress={() => console.log("pressing card", name)}
+        onPress={() => navigation.navigate("Repo Details", { repo: item })}
       />
     )
   }
 
-  const renderList = () => {
-    if (reposAreLoading) {
-      return renderLoading()
-    }
+  if (reposAreLoading) {
+    return renderLoading()
+  }
 
-    if (reposError) {
-      return renderError()
-    }
+  if (reposError) {
+    return renderError()
+  }
 
-    if (!reposData || reposData.length === 0) {
-      return renderEmpty()
-    }
-
-    return (
-      <FlatList
-        data={reposData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderCard}
-      />
-    )
+  if (!reposData || reposData.length === 0) {
+    return renderEmpty()
   }
 
   return (
-    <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
-      {renderList()}
-    </SafeAreaView>
+    <FlatList
+      data={reposData}
+      keyExtractor={(item) => item.id.toString()}
+      renderItem={renderCard}
+    />
   )
 }
 
