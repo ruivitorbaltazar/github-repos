@@ -1,7 +1,7 @@
 import { View, Text, FlatList } from "react-native"
 import { useRepositories } from "../hooks/useRepositories"
-import { RepoCard } from "../components/RepoCard";
-import { Repository } from "../types/repository";
+import { RepoCard } from "../components/RepoCard"
+import { Repository } from "../types/repository"
 
 const RepoListScreen = () => {
   const {
