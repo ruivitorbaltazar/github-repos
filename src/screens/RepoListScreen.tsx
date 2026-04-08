@@ -1,4 +1,12 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from "react-native"
+import { useState } from "react"
+import {
+  View,
+  Text,
+  TextInput,
+  FlatList,
+  TouchableOpacity,
+  StyleSheet,
+} from "react-native"
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -16,11 +24,14 @@ type NavigationProp = NativeStackNavigationProp<
 >
 
 const RepoListScreen = () => {
+  const [search, setSearch] = useState("")
+  const [language, setLanguage] = useState("typescript")
+
   const {
     reposData,
-    reposAreLoading,
+    reposAreFetching,
     reposError,
-  } = useRepositories()
+  } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
 
@@ -80,24 +91,67 @@ const RepoListScreen = () => {
     )
   }
 
-  if (reposAreLoading) {
-    return renderLoading()
-  }
+  const renderFilterBar = () => (
+    <View style={styles.filterBar}>
+      <Text style={styles.inputLabel}>Search repositories:</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Search repositories..."
+          value={search}
+          onChangeText={setSearch}
+          style={styles.input}
+        />
+        {search ? (
+          <TouchableOpacity onPress={() => setSearch("")} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>╳</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
 
-  if (reposError) {
-    return renderError()
-  }
+      <Text style={styles.inputLabel}>Filter by language:</Text>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Filter by language (e.g. typescript)"
+          value={language}
+          onChangeText={setLanguage}
+          style={styles.input}
+        />
+        {language ? (
+          <TouchableOpacity onPress={() => setLanguage("")} style={styles.clearButton}>
+            <Text style={styles.clearButtonText}>╳</Text>
+          </TouchableOpacity>
+        ) : null}
+      </View>
+    </View>
+  )
 
-  if (!reposData || reposData.length === 0) {
-    return renderEmpty()
+  const renderList = () => {
+    if (reposAreFetching) {
+      return renderLoading()
+    }
+
+    if (reposError) {
+      return renderError()
+    }
+
+    if (!reposData || reposData.length === 0) {
+      return renderEmpty()
+    }
+
+    return (
+      <FlatList
+        data={reposData}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderCard}
+      />
+    )
   }
 
   return (
-    <FlatList
-      data={reposData}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderCard}
-    />
+    <View style={{ flex: 1, padding: 16 }}>
+      {renderFilterBar()}
+      {renderList()}
+    </View>
   )
 }
 
@@ -130,6 +184,42 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  filterBar: {
+    paddingHorizontal: 12,
+    paddingBottom: 12,
+    marginBottom: 8,
+    flexDirection: "column",
+  },
+  inputLabel: {
+    fontSize: 14,
+    color: "#555",
+    marginTop: 12,
+    marginBottom: 4,
+  },
+  inputContainer: {
+    flexDirection: "column",
+    justifyContent: "center",
+  },
+  input: {
+    padding: 12,
+    borderRadius: 8,
+    backgroundColor: "#fff",
+  },
+  clearButton: {
+    marginLeft: 8,
+    height: 20,
+    width: 20,
+    borderRadius: 10,
+    backgroundColor: "#ccc",
+    justifyContent: "center",
+    alignItems: "center",
+    position: "absolute",
+    right: 12,
+  },
+  clearButtonText: {
+    color: "#fff",
+    fontSize: 12,
   },
 })
 

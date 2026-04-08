@@ -12,7 +12,15 @@ const RepoCard = ({
   <TouchableOpacity style={styles.card} onPress={onPress}>
     <View>
       <Text style={styles.name}>{name}</Text>
-      {description ? <Text style={styles.description}>{description}</Text> : null}
+      {description ? (
+        <Text
+          numberOfLines={3}
+          ellipsizeMode="tail"
+          style={styles.description}
+        >
+          {description}
+        </Text>
+      ) : null}
     </View>
 
     <View style={styles.footer}>
