@@ -39,6 +39,17 @@ const RepoListScreen = () => {
     </View>
   )
 
+  const renderEmpty = () => (
+    <View style={styles.error}>
+      <Text style={styles.errorTitle}>
+        No repositories found
+      </Text>
+      <Text style={styles.errorBody}>
+        We couldn't find any repositories matching your criteria.
+      </Text>
+    </View>
+  )
+
   const renderCard = ({ item }: { item: Repository }) => {
     const {
       name,
@@ -67,6 +78,10 @@ const RepoListScreen = () => {
 
     if (reposError) {
       return renderError()
+    }
+
+    if (!reposData || reposData.length === 0) {
+      return renderEmpty()
     }
 
     return (
