@@ -28,5 +28,5 @@ type RepoCardProps = {
 
 export {
   Repository,
-  RepoCardProps
+  RepoCardProps,
 }
