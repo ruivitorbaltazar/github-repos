@@ -1,4 +1,5 @@
-import { View, Text, FlatList } from "react-native"
+import { SafeAreaView } from "react-native-safe-area-context"
+import { Text, FlatList } from "react-native"
 import { useRepositories } from "../hooks/useRepositories"
 import { RepoCard } from "../components/RepoCard"
 import { Repository } from "../types/repository"
@@ -44,11 +45,13 @@ const RepoListScreen = () => {
   }
 
   return (
-    <FlatList
-      data={reposData}
-      keyExtractor={(item) => item.id.toString()}
-      renderItem={renderCard}
-    />
+    <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+      <FlatList
+        data={reposData}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderCard}
+      />
+    </SafeAreaView>
   )
 }
 
