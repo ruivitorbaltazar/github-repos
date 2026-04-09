@@ -1,5 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native"
-import { RepoCardProps } from "../types/repository"
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  useColorScheme,
+} from "react-native"
+import { RepoCardProps } from "@/types/repository"
 
 const RepoCard = ({
   name,
@@ -8,40 +15,45 @@ const RepoCard = ({
   language,
   owner,
   onPress,
-}: RepoCardProps) => (
-  <TouchableOpacity style={styles.card} onPress={onPress}>
-    <View>
-      <Text style={styles.name}>{name}</Text>
-      {description ? (
-        <Text
-          numberOfLines={3}
-          ellipsizeMode="tail"
-          style={styles.description}
-        >
-          {description}
-        </Text>
-      ) : null}
-    </View>
+}: RepoCardProps) => {
+  const colorScheme = useColorScheme()
+  const styles = colorScheme === "dark" ? stylesDark : stylesLight
 
-    <View style={styles.footer}>
-      <View style={styles.stars}>
-        <Text style={styles.starsIcon}>★</Text>
-        <Text style={styles.starsText}>{stars}</Text>
+  return (
+    <TouchableOpacity style={styles.card} onPress={onPress}>
+      <View>
+        <Text style={styles.name}>{name}</Text>
+        {description ? (
+          <Text
+            numberOfLines={3}
+            ellipsizeMode="tail"
+            style={styles.description}
+          >
+            {description}
+          </Text>
+        ) : null}
       </View>
 
-      <View style={styles.owner}>
-        <Image style={styles.ownerAvatar} source={{ uri: owner?.avatar_url }} />
-        <Text style={styles.ownerName}>{owner?.login}</Text>
-      </View>
+      <View style={styles.footer}>
+        <View style={styles.stars}>
+          <Text style={styles.starsIcon}>★</Text>
+          <Text style={styles.starsText}>{stars}</Text>
+        </View>
 
-      <View style={styles.language}>
-        {language ? <Text style={styles.languageText}>{language}</Text> : null}
-      </View>
-    </View>
-  </TouchableOpacity>
-)
+        <View style={styles.owner}>
+          <Image style={styles.ownerAvatar} source={{ uri: owner?.avatar_url }} />
+          <Text style={styles.ownerName}>{owner?.login}</Text>
+        </View>
 
-const styles = StyleSheet.create({
+        <View style={styles.language}>
+          {language ? <Text style={styles.languageText}>{language}</Text> : null}
+        </View>
+      </View>
+    </TouchableOpacity>
+  )
+}
+
+const stylesLight = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderRadius: 12,
@@ -111,5 +123,51 @@ const styles = StyleSheet.create({
     color: "#888",
   },
 })
+const stylesDark = StyleSheet.create({
+  card: {
+    ...stylesLight.card,
+    backgroundColor: "#333",
+    shadowColor: "#fff",
+  },
+  name: {
+    ...stylesLight.name,
+    color: "#fff",
+  },
+  description: {
+    ...stylesLight.description,
+    color: "#ccc",
+  },
+  footer: {
+    ...stylesLight.footer,
+  },
+  stars: {
+    ...stylesLight.stars,
+  },
+  starsIcon: {
+    ...stylesLight.starsIcon,
+  },
+  starsText: {
+    ...stylesLight.starsText,
+    color: "#fff",
+  },
+  owner: {
+    ...stylesLight.owner,
+  },
+  ownerAvatar: {
+    ...stylesLight.ownerAvatar,
+    backgroundColor: "#ccc",
+  },
+  ownerName: {
+    ...stylesLight.ownerName,
+    color: "#fff",
+  },
+  language: {
+    ...stylesLight.language,
+  },
+  languageText: {
+    ...stylesLight.languageText,
+    color: "#aaa",
+  },
+})
 
-export { RepoCard, styles }
+export { RepoCard, stylesLight, stylesDark }

@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
-import Navigation from "./src/navigation";
+import Navigation from "@/navigation"
 
 const client = new QueryClient()
 

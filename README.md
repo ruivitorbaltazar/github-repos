@@ -30,7 +30,6 @@ A React Native application that allows users to browse, search, and explore GitH
 * **TypeScript**
 * **TanStack Query** – data fetching & caching
 * **React Navigation** – navigation
-<!-- * **NativeWind** – styling !TODO! -->
 
 ---
 
@@ -130,6 +129,7 @@ q=language:typescript&sort=stars
 * Advanced filtering (stars, date, etc.)
 * Repository bookmarking
 * Unit and integration tests
+* Use NativeWind for styling
 
 ---
 

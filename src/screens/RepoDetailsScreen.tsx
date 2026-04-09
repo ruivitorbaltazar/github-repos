@@ -1,11 +1,22 @@
-import { View, Text, Linking, Image, TouchableOpacity, StyleSheet } from "react-native"
+import {
+  View,
+  Text,
+  Linking,
+  Image,
+  TouchableOpacity,
+  StyleSheet,
+  useColorScheme,
+} from "react-native"
 import { RouteProp, useRoute } from "@react-navigation/native"
 
-import { RootStackParamList } from "../types/navigation"
+import { RootStackParamList } from "@/types/navigation"
 
 const RepoDetailsScreen = () => {
-  const route = useRoute<RouteProp<RootStackParamList, "Repo Details">>()
+  const route = useRoute<RouteProp<RootStackParamList, "RepoDetails">>()
   const { repo } = route.params
+
+  const colorScheme = useColorScheme()
+  const styles = colorScheme === "dark" ? stylesDark : stylesLight
 
   return (
     <View style={styles.container}>
@@ -45,11 +56,11 @@ const RepoDetailsScreen = () => {
   )
 }
 
-const styles = StyleSheet.create({
+const stylesLight = StyleSheet.create({
   container: {
+    flex: 1,
     padding: 24,
     flexDirection: "column",
-    justifyContent: "space-between",
   },
   header: {
     flexDirection: "row",
@@ -114,6 +125,60 @@ const styles = StyleSheet.create({
   actionText: {
     color: "#fff",
     fontSize: 16,
+  },
+})
+
+const stylesDark = StyleSheet.create({
+  container: {
+    ...stylesLight.container,
+    backgroundColor: "#333",
+  },
+  header: {
+    ...stylesLight.header,
+  },
+  subheader: {
+    ...stylesLight.subheader,
+  },
+  title: {
+    ...stylesLight.title,
+    color: "#fff",
+  },
+  stars: {
+    ...stylesLight.stars,
+  },
+  starsIcon: {
+    ...stylesLight.starsIcon,
+  },
+  starsText: {
+    ...stylesLight.starsText,
+    color: "#fff",
+  },
+  description: {
+    ...stylesLight.description,
+    color: "#ccc",
+  },
+  owner: {
+    ...stylesLight.owner,
+  },
+  ownerAvatar: {
+    ...stylesLight.ownerAvatar,
+    backgroundColor: "#ccc",
+  },
+  ownerName: {
+    ...stylesLight.ownerName,
+    color: "#fff",
+  },
+  languageText: {
+    ...stylesLight.languageText,
+    color: "#888",
+  },
+  action: {
+    ...stylesLight.action,
+    backgroundColor: "#007AFF",
+  },
+  actionText: {
+    ...stylesLight.actionText,
+    color: "#fff",
   },
 })
 

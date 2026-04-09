@@ -6,21 +6,23 @@ import {
   FlatList,
   TouchableOpacity,
   StyleSheet,
+  useColorScheme,
 } from "react-native"
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
-import { useRepositories } from "../hooks/useRepositories"
+import { useRepositories } from "@/hooks/useRepositories"
 
-import { RepoCard } from "../components/RepoCard"
-import { RepoCardSkeleton } from "../components/RepoCardSkeleton"
+import { RepoCard } from "@/components/RepoCard"
+import { RepoCardSkeleton } from "@/components/RepoCardSkeleton"
+import { Banner } from "@/components/Banner"
 
-import { Repository } from "../types/repository"
-import { RootStackParamList } from "../types/navigation"
+import { Repository } from "@/types/repository"
+import { RootStackParamList } from "@/types/navigation"
 
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
-  "Repo List"
+  "RepoList"
 >
 
 const RepoListScreen = () => {
@@ -36,6 +38,9 @@ const RepoListScreen = () => {
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
+
+  const colorScheme = useColorScheme()
+  const styles = colorScheme === "dark" ? stylesDark : stylesLight
 
   useEffect(() => {
     if (reposError && reposError.message === "Network Error") {
@@ -97,16 +102,10 @@ const RepoListScreen = () => {
         language={language}
         stars={stargazers_count}
         owner={{ login: owner.login, avatar_url: owner.avatar_url }}
-        onPress={() => navigation.navigate("Repo Details", { repo: item })}
+        onPress={() => navigation.navigate("RepoDetails", { repo: item })}
       />
     )
   }
-
-  const renderNewtorkErrorBanner = () => (
-    <View style={styles.banner}>
-      <Text style={styles.bannerText}>Network error, please check your connection</Text>
-    </View>
-  )
 
   const renderFilterBar = () => (
     <View style={styles.filterBar}>
@@ -165,29 +164,20 @@ const RepoListScreen = () => {
   }
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      {shouldShowNetworkBanner ? renderNewtorkErrorBanner() : null}
+    <View style={styles.container}>
+      {shouldShowNetworkBanner ? (
+        <Banner message="Network error, please check your connection" />
+      ) : null}
       {renderFilterBar()}
       {renderList()}
     </View>
   )
 }
 
-const styles = StyleSheet.create({
-  banner: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 24,
-    backgroundColor: "#FF3B30",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  bannerText: {
-    color: "#fff",
-    fontSize: 12,
-    textAlign: "center",
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
   },
   error: {
     flex: 1,
@@ -253,6 +243,54 @@ const styles = StyleSheet.create({
   clearButtonText: {
     color: "#fff",
     fontSize: 12,
+  },
+})
+
+const stylesDark = StyleSheet.create({
+  container: {
+    ...stylesLight.container,
+    backgroundColor: "#111",
+  },
+  error: {
+    ...stylesLight.error,
+  },
+  errorTitle: {
+    ...stylesLight.errorTitle,
+    color: "#fff",
+  },
+  errorBody: {
+    ...stylesLight.errorBody,
+    color: "#aaa",
+  },
+  errorAction: {
+    ...stylesLight.errorAction,
+  },
+  errorActionText: {
+    ...stylesLight.errorActionText,
+    color: "#fff",
+  },
+  filterBar: {
+    ...stylesLight.filterBar,
+  },
+  inputLabel: {
+    ...stylesLight.inputLabel,
+    color: "#aaa",
+  },
+  inputContainer: {
+    ...stylesLight.inputContainer,
+  },
+  input: {
+    ...stylesLight.input,
+    backgroundColor: "#333",
+    color: "#fff",
+  },
+  clearButton: {
+    ...stylesLight.clearButton,
+    backgroundColor: "#555",
+  },
+  clearButtonText: {
+    ...stylesLight.clearButtonText,
+    color: "#fff",
   },
 })
 
