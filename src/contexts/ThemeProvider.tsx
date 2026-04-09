@@ -13,13 +13,13 @@ const ThemeProvider = ({
   const systemScheme = useColorScheme()
   const [mode, setMode] = useState<ThemeMode>("system")
 
-  const resolvedTheme = useMemo(() => {
-    if (mode === "system") {
-      return systemScheme === "dark" ? darkTheme : lightTheme
-    }
-    // If mode is explicitly set to "light" or "dark", use that
-    return mode === "dark" ? darkTheme : lightTheme
-  }, [mode, systemScheme])
+  const resolvedMode = useMemo(() => (
+    mode === "system" ? systemScheme : mode
+  ), [mode, systemScheme])
+
+  const resolvedTheme = useMemo(() => (
+    resolvedMode === "dark" ? darkTheme : lightTheme
+  ), [mode, systemScheme])
 
   return (
     <ThemeContext.Provider
@@ -27,6 +27,7 @@ const ThemeProvider = ({
         theme: resolvedTheme,
         mode,
         setMode,
+        resolvedMode,
       }}
     >
       {children}

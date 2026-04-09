@@ -1,3 +1,4 @@
+import { TouchableOpacity, Text } from "react-native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import RepoListScreen from "@/screens/RepoListScreen"
@@ -10,13 +11,23 @@ import { RootStackParamList } from "@/types/navigation"
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Navigation() {
-  const { theme } = useTheme()
+  const { theme, resolvedMode, setMode } = useTheme()
 
   const sharedOptions = {
     headerStyle: {
       backgroundColor: theme.bgPrimary,
     },
     headerTintColor: theme.textPrimary,
+    headerRight: () => (
+      <TouchableOpacity
+        onPress={() => setMode(resolvedMode === "light" ? "dark" : "light")}
+        style={{ alignItems: "center", justifyContent: "center", width: 40, height: 40 }}
+      >
+        <Text style={{ fontSize: 20, color: theme.textPrimary }}>
+          {resolvedMode === "light" ? "☼" : "☾"}
+        </Text>
+      </TouchableOpacity>
+    )
   }
 
   return (
