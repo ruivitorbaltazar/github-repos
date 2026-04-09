@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import {
   View,
   Text,
@@ -27,6 +27,8 @@ const RepoListScreen = () => {
   const [search, setSearch] = useState("")
   const [language, setLanguage] = useState("typescript")
 
+  const [shouldShowNetworkBanner, setShouldShowNetworkBanner] = useState(false)
+
   const {
     reposData,
     reposAreFetching,
@@ -34,6 +36,15 @@ const RepoListScreen = () => {
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
+
+  useEffect(() => {
+    if (reposError && reposError.message === "Network Error") {
+      console.log('network error!');
+      setShouldShowNetworkBanner(true)
+    } else {
+      setShouldShowNetworkBanner(false)
+    }
+  }, [reposError])
 
   const renderLoading = () => (
     <>
@@ -91,6 +102,12 @@ const RepoListScreen = () => {
     )
   }
 
+  const renderNewtorkErrorBanner = () => (
+    <View style={styles.banner}>
+      <Text style={styles.bannerText}>Network error, please check your connection</Text>
+    </View>
+  )
+
   const renderFilterBar = () => (
     <View style={styles.filterBar}>
       <Text style={styles.inputLabel}>Search repositories:</Text>
@@ -130,7 +147,7 @@ const RepoListScreen = () => {
       return renderLoading()
     }
 
-    if (reposError) {
+    if (reposError && reposError.message !== "Network Error") {
       return renderError()
     }
 
@@ -149,6 +166,7 @@ const RepoListScreen = () => {
 
   return (
     <View style={{ flex: 1, padding: 16 }}>
+      {shouldShowNetworkBanner ? renderNewtorkErrorBanner() : null}
       {renderFilterBar()}
       {renderList()}
     </View>
@@ -156,6 +174,21 @@ const RepoListScreen = () => {
 }
 
 const styles = StyleSheet.create({
+  banner: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 24,
+    backgroundColor: "#FF3B30",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  bannerText: {
+    color: "#fff",
+    fontSize: 12,
+    textAlign: "center",
+  },
   error: {
     flex: 1,
     justifyContent: "center",
