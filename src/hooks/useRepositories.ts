@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query"
-import { fetchRepositories } from "../api/github"
-import { Repository } from "../types/repository"
+import { fetchRepositories } from "@/api/github"
+import { Repository } from "@/types/repository"
 
 export const useRepositories = ({ search, language }: { search: string; language: string }) => {
   const [debouncedSearch, setDebouncedSearch] = useState(search);

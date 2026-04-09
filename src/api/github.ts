@@ -1,5 +1,5 @@
 import axios from "axios"
-import { Repository } from "../types/repository"
+import { Repository } from "@/types/repository"
 
 export const fetchRepositories = async ({ queryKey }: any): Promise<Repository[]> => { // remove any and add proper type for queryKey
   const baseURL = "https://api.github.com/search/repositories"

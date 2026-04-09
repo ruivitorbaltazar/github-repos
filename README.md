@@ -18,7 +18,7 @@ A React Native application that allows users to browse, search, and explore GitH
 * 🔍 Debounced search
 * 🏷️ Language filters
 * 📄 Repository details screen ( > React Navigation)
-<!-- * 🌙 Dark mode support !TODO! -->
+* 🌙 Dark mode support
 * ⚡ Smooth UX with cached data ( > React Query)
 * 📶 Offline support (last known data persisted) ( > React Query)
 
@@ -30,7 +30,6 @@ A React Native application that allows users to browse, search, and explore GitH
 * **TypeScript**
 * **TanStack Query** – data fetching & caching
 * **React Navigation** – navigation
-<!-- * **NativeWind** – styling !TODO! -->
 
 ---
 
@@ -83,7 +82,7 @@ The app follows a simple and scalable structure:
 
 * Text truncation for long content
 * Loading skeletons for better perceived performance
-<!-- * Dark mode support TODO -->
+* Dark mode support
 
 ---
 
@@ -130,6 +129,7 @@ q=language:typescript&sort=stars
 * Advanced filtering (stars, date, etc.)
 * Repository bookmarking
 * Unit and integration tests
+* Use NativeWind for styling
 
 ---
 

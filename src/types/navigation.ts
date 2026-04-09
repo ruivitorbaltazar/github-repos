@@ -1,8 +1,8 @@
-import { Repository } from "./repository"
+import { Repository } from "@/types/repository"
 
 type RootStackParamList = {
-  "Repo List": undefined
-  "Repo Details": { repo: Repository }
+  RepoList: undefined
+  RepoDetails: { repo: Repository }
 }
 
 export {
