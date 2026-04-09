@@ -1,12 +1,4 @@
-import { View, Text, StyleSheet } from "react-native"
-
-const Banner = ({ message }: { message: string }) => {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.message}>{message}</Text>
-    </View>
-  )
-}
+import { StyleSheet } from "react-native"
 
 const styles = StyleSheet.create({
   container: {
@@ -26,4 +18,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export { Banner }
+export { styles }

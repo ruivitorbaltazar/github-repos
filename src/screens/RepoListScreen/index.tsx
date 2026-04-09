@@ -5,13 +5,12 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
-  StyleSheet,
-  useColorScheme,
 } from "react-native"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 import { useRepositories } from "@/hooks/useRepositories"
+import { useTheme } from "@/hooks/useTheme"
 
 import { RepoCard } from "@/components/RepoCard"
 import { RepoCardSkeleton } from "@/components/RepoCardSkeleton"
@@ -20,12 +19,16 @@ import { Banner } from "@/components/Banner"
 import { Repository } from "@/types/repository"
 import { RootStackParamList } from "@/types/navigation"
 
+import { styles } from "./styles"
+
 type NavigationProp = NativeStackNavigationProp<
   RootStackParamList,
   "RepoList"
 >
 
 const RepoListScreen = () => {
+  const { theme } = useTheme()
+
   const [search, setSearch] = useState("")
   const [language, setLanguage] = useState("typescript")
 
@@ -38,9 +41,6 @@ const RepoListScreen = () => {
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
-
-  const colorScheme = useColorScheme()
-  const styles = colorScheme === "dark" ? stylesDark : stylesLight
 
   useEffect(() => {
     if (reposError && reposError.message === "Network Error") {
@@ -59,28 +59,28 @@ const RepoListScreen = () => {
 
   const renderError = () => (
     <View style={styles.error}>
-      <Text style={styles.errorTitle}>
+      <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
         Oops!
       </Text>
-      <Text style={styles.errorBody}>
+      <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
         Something went wrong while fetching repositories.
       </Text>
-      <Text style={styles.errorBody}>
+      <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
         "{reposError?.message || "Unknown error"}"
       </Text>
       {/* TODO: Implement retry logic */}
       <TouchableOpacity style={styles.errorAction} onPress={() => console.log("Trying again")}>
-        <Text style={styles.errorActionText}>Try again</Text>
+        <Text style={[styles.errorActionText, { color: theme.textTertiary }]}>Try again</Text>
       </TouchableOpacity>
     </View>
   )
 
   const renderEmpty = () => (
     <View style={styles.error}>
-      <Text style={styles.errorTitle}>
+      <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
         No repositories found
       </Text>
-      <Text style={styles.errorBody}>
+      <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
         We couldn't find any repositories matching your criteria.
       </Text>
     </View>
@@ -109,32 +109,32 @@ const RepoListScreen = () => {
 
   const renderFilterBar = () => (
     <View style={styles.filterBar}>
-      <Text style={styles.inputLabel}>Search repositories:</Text>
+      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>Search repositories:</Text>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Search repositories..."
           value={search}
           onChangeText={setSearch}
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
         />
         {search ? (
-          <TouchableOpacity onPress={() => setSearch("")} style={styles.clearButton}>
-            <Text style={styles.clearButtonText}>╳</Text>
+          <TouchableOpacity onPress={() => setSearch("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
+            <Text style={[styles.clearButtonText, { color: theme.textTertiary }]}>╳</Text>
           </TouchableOpacity>
         ) : null}
       </View>
 
-      <Text style={styles.inputLabel}>Filter by language:</Text>
+      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>Filter by language:</Text>
       <View style={styles.inputContainer}>
         <TextInput
           placeholder="Filter by language (e.g. typescript)"
           value={language}
           onChangeText={setLanguage}
-          style={styles.input}
+          style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
         />
         {language ? (
-          <TouchableOpacity onPress={() => setLanguage("")} style={styles.clearButton}>
-            <Text style={styles.clearButtonText}>╳</Text>
+          <TouchableOpacity onPress={() => setLanguage("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
+            <Text style={[styles.clearButtonText, { color: theme.textTertiary }]}>╳</Text>
           </TouchableOpacity>
         ) : null}
       </View>
@@ -164,7 +164,7 @@ const RepoListScreen = () => {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
       {shouldShowNetworkBanner ? (
         <Banner message="Network error, please check your connection" />
       ) : null}
@@ -173,125 +173,5 @@ const RepoListScreen = () => {
     </View>
   )
 }
-
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-  },
-  error: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 24,
-  },
-  errorTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#111",
-    marginBottom: 12,
-  },
-  errorBody: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "center",
-    marginBottom: 24,
-  },
-  errorAction: {
-    backgroundColor: "#007AFF",
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-  },
-  errorActionText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  filterBar: {
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-    marginBottom: 8,
-    flexDirection: "column",
-  },
-  inputLabel: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 12,
-    marginBottom: 4,
-  },
-  inputContainer: {
-    flexDirection: "column",
-    justifyContent: "center",
-  },
-  input: {
-    padding: 12,
-    borderRadius: 8,
-    backgroundColor: "#fff",
-  },
-  clearButton: {
-    marginLeft: 8,
-    height: 20,
-    width: 20,
-    borderRadius: 10,
-    backgroundColor: "#ccc",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "absolute",
-    right: 12,
-  },
-  clearButtonText: {
-    color: "#fff",
-    fontSize: 12,
-  },
-})
-
-const stylesDark = StyleSheet.create({
-  container: {
-    ...stylesLight.container,
-    backgroundColor: "#111",
-  },
-  error: {
-    ...stylesLight.error,
-  },
-  errorTitle: {
-    ...stylesLight.errorTitle,
-    color: "#fff",
-  },
-  errorBody: {
-    ...stylesLight.errorBody,
-    color: "#aaa",
-  },
-  errorAction: {
-    ...stylesLight.errorAction,
-  },
-  errorActionText: {
-    ...stylesLight.errorActionText,
-    color: "#fff",
-  },
-  filterBar: {
-    ...stylesLight.filterBar,
-  },
-  inputLabel: {
-    ...stylesLight.inputLabel,
-    color: "#aaa",
-  },
-  inputContainer: {
-    ...stylesLight.inputContainer,
-  },
-  input: {
-    ...stylesLight.input,
-    backgroundColor: "#333",
-    color: "#fff",
-  },
-  clearButton: {
-    ...stylesLight.clearButton,
-    backgroundColor: "#555",
-  },
-  clearButtonText: {
-    ...stylesLight.clearButtonText,
-    color: "#fff",
-  },
-})
 
 export default RepoListScreen
