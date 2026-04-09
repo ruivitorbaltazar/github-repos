@@ -1,32 +1,23 @@
-import { useColorScheme } from "react-native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
-import { HeaderBackButton } from '@react-navigation/elements'
 
 import RepoListScreen from "@/screens/RepoListScreen"
 import RepoDetailsScreen from "@/screens/RepoDetailsScreen"
+
+import { useTheme } from "@/hooks/useTheme"
+
 import { RootStackParamList } from "@/types/navigation"
 
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
-const sharedOptionsLight = {
-  headerStyle: {
-    backgroundColor: "#fff",
-  },
-  headerTintColor: "#333",
-}
-
-const sharedOptionsDark = {
-  ...sharedOptionsLight,
-  headerStyle: {
-    backgroundColor: "#333",
-  },
-  headerTintColor: "#fff",
-}
-
 export default function Navigation() {
+  const { theme } = useTheme()
 
-  const colorScheme = useColorScheme()
-  const sharedOptions = colorScheme === "dark" ? sharedOptionsDark : sharedOptionsLight
+  const sharedOptions = {
+    headerStyle: {
+      backgroundColor: theme.bgPrimary,
+    },
+    headerTintColor: theme.textPrimary,
+  }
 
   return (
     <Stack.Navigator>
