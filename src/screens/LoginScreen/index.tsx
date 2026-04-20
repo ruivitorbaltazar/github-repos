@@ -7,15 +7,16 @@ import { styles } from "./styles"
 
 const LoginScreen = () => {
   const { theme } = useTheme()
-  const { login } = useAuth()
+  const { login, loginViaAuth0 } = useAuth()
 
   const [token, setToken] = useState("")
-  const [isLoading, setIsLoading] = useState(false)
+  const [isPATLoading, setIsPATLoading] = useState(false)
+  const [isAuth0Loading, setIsAuth0Loading] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
-  const handleSubmit = async () => {
+  const handlePATLogin = async () => {
     if (!token.trim()) return
-    setIsLoading(true)
+    setIsPATLoading(true)
     setError(null)
     try {
       await validateToken(token.trim())
@@ -23,16 +24,50 @@ const LoginScreen = () => {
     } catch {
       setError("Invalid token. Please check and try again.")
     } finally {
-      setIsLoading(false)
+      setIsPATLoading(false)
     }
   }
+
+  const handleAuth0Login = async () => {
+    setIsAuth0Loading(true)
+    setError(null)
+    try {
+      await loginViaAuth0()
+    } catch {
+      setError("Auth0 login failed. Please try again.")
+    } finally {
+      setIsAuth0Loading(false)
+    }
+  }
+
+  const isAnyLoading = isPATLoading || isAuth0Loading
 
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
       <Text style={[styles.title, { color: theme.textPrimary }]}>GitHub Repos</Text>
       <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-        Enter your Personal Access Token to continue.
+        Sign in to continue.
       </Text>
+
+      <TouchableOpacity
+        style={[styles.auth0Button, { borderColor: theme.bgTertiary }]}
+        onPress={handleAuth0Login}
+        disabled={isAnyLoading}
+      >
+        {isAuth0Loading ? (
+          <ActivityIndicator color={theme.textPrimary} />
+        ) : (
+          <Text style={[styles.auth0ButtonText, { color: theme.textPrimary }]}>
+            Sign in with Auth0
+          </Text>
+        )}
+      </TouchableOpacity>
+
+      <View style={styles.divider}>
+        <View style={[styles.dividerLine, { backgroundColor: theme.bgTertiary }]} />
+        <Text style={[styles.dividerText, { color: theme.textTertiary }]}>or</Text>
+        <View style={[styles.dividerLine, { backgroundColor: theme.bgTertiary }]} />
+      </View>
 
       <Text style={[styles.label, { color: theme.textSecondary }]}>Personal Access Token</Text>
       <TextInput
@@ -51,10 +86,10 @@ const LoginScreen = () => {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={handleSubmit}
-        disabled={isLoading || !token.trim()}
+        onPress={handlePATLogin}
+        disabled={isAnyLoading || !token.trim()}
       >
-        {isLoading ? (
+        {isPATLoading ? (
           <ActivityIndicator color="#fff" />
         ) : (
           <Text style={styles.buttonText}>Sign in</Text>
