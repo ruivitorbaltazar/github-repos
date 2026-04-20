@@ -3,8 +3,10 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack"
 
 import RepoListScreen from "@/screens/RepoListScreen"
 import RepoDetailsScreen from "@/screens/RepoDetailsScreen"
+import LoginScreen from "@/screens/LoginScreen"
 
 import { useTheme } from "@/hooks/useTheme"
+import { useAuth } from "@/hooks/useAuth"
 
 import { RootStackParamList } from "@/types/navigation"
 
@@ -12,6 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Navigation() {
   const { theme, resolvedMode, setMode } = useTheme()
+  const { token, logout } = useAuth()
 
   const sharedOptions = {
     headerStyle: {
@@ -32,21 +35,39 @@ export default function Navigation() {
 
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="RepoList"
-        component={RepoListScreen}
-        options={{ ...sharedOptions, title: "Repositories" }}
-      />
-      <Stack.Screen
-        name="RepoDetails"
-        component={RepoDetailsScreen}
-        options={(({ route }: { route: { params: { repo: { name: string } } } }) => (
-          {
-            ...sharedOptions,
-            title: route.params.repo.name
-          }
-        ))}
-      />
+      {token == null ? (
+        <Stack.Screen
+          name="Login"
+          component={LoginScreen}
+          options={{ ...sharedOptions, title: "Sign in" }}
+        />
+      ) : (
+        <>
+          <Stack.Screen
+            name="RepoList"
+            component={RepoListScreen}
+            options={{
+              ...sharedOptions,
+              title: "Repositories",
+              headerLeft: () => (
+                <TouchableOpacity onPress={logout} style={{ paddingRight: 8 }}>
+                  <Text style={{ fontSize: 14, color: theme.textSecondary }}>Sign out</Text>
+                </TouchableOpacity>
+              ),
+            }}
+          />
+          <Stack.Screen
+            name="RepoDetails"
+            component={RepoDetailsScreen}
+            options={(({ route }: { route: { params: { repo: { name: string } } } }) => (
+              {
+                ...sharedOptions,
+                title: route.params.repo.name
+              }
+            ))}
+          />
+        </>
+      )}
     </Stack.Navigator>
   )
 }
