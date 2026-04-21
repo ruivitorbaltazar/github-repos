@@ -13,6 +13,7 @@ const LoginScreen = () => {
   const [isPATLoading, setIsPATLoading] = useState(false)
   const [isAuth0Loading, setIsAuth0Loading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [showToken, setShowToken] = useState(false)
 
   const handlePATLogin = async () => {
     if (!token.trim()) return
@@ -71,15 +72,23 @@ const LoginScreen = () => {
       </View>
 
       <Text style={[styles.label, { color: theme.textSecondary }]}>Personal Access Token</Text>
-      <TextInput
-        value={token}
-        onChangeText={setToken}
-        placeholder="github_pat_xxxxxxxxxxxx"
-        secureTextEntry
-        autoCapitalize="none"
-        autoCorrect={false}
-        style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
-      />
+      <View style={[styles.inputWrapper, { backgroundColor: theme.bgTertiary }]}>
+        <TextInput
+          value={token}
+          onChangeText={setToken}
+          placeholder="github_pat_xxxxxxxxxxxx"
+          secureTextEntry={!showToken}
+          clearButtonMode="while-editing"
+          autoCapitalize="none"
+          autoCorrect={false}
+          style={[styles.input, { color: theme.textPrimary }]}
+        />
+        <TouchableOpacity onPress={() => setShowToken(v => !v)} style={styles.showHideButton}>
+          <Text style={{ color: theme.textSecondary, fontSize: 13 }}>
+            {showToken ? "Hide" : "Show"}
+          </Text>
+        </TouchableOpacity>
+      </View>
 
       {error ? (
         <Text style={[styles.error, { color: "#FF3B30" }]}>{error}</Text>

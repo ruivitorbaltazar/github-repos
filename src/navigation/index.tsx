@@ -39,7 +39,7 @@ export default function Navigation() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ ...sharedOptions, title: "Sign in" }}
+          options={{ ...sharedOptions, title: "Sign in", animationTypeForReplace: "pop" }}
         />
       ) : (
         <>
@@ -50,8 +50,8 @@ export default function Navigation() {
               ...sharedOptions,
               title: "Repositories",
               headerLeft: () => (
-                <TouchableOpacity onPress={logout} style={{ paddingRight: 8 }}>
-                  <Text style={{ fontSize: 14, color: theme.textSecondary }}>Sign out</Text>
+                <TouchableOpacity onPress={logout} style={{ alignItems: "center", justifyContent: "center", height: 40, paddingHorizontal: 8 }}>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textSecondary }}>Sign out</Text>
                 </TouchableOpacity>
               ),
             }}

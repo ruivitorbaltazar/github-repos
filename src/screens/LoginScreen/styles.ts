@@ -43,11 +43,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 8,
   },
-  input: {
-    padding: 12,
+  inputWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 8,
-    fontSize: 14,
     marginBottom: 12,
+  },
+  input: {
+    flex: 1,
+    padding: 12,
+    fontSize: 14,
+  },
+  showHideButton: {
+    width: 44,
+    paddingVertical: 12,
+    alignItems: "center",
   },
   error: {
     fontSize: 14,
