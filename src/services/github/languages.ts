@@ -1,3 +1,5 @@
+import { UserReposResponseSchema } from "@/schemas/github/userRepo"
+import { parseOrThrow } from "@/schemas/parse"
 import { githubClient } from "./client"
 
 export const fetchUserLanguages = async (): Promise<string[]> => {
@@ -5,8 +7,10 @@ export const fetchUserLanguages = async (): Promise<string[]> => {
     params: { per_page: 100, sort: "updated" },
   })
 
+  const repos = parseOrThrow(UserReposResponseSchema, response.data, "github/user/repos")
+
   const counts: Record<string, number> = {}
-  for (const repo of response.data) {
+  for (const repo of repos) {
     if (repo.language) {
       counts[repo.language] = (counts[repo.language] ?? 0) + 1
     }
