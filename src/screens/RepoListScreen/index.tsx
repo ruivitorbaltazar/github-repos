@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import {
   View,
   Text,
@@ -10,11 +10,13 @@ import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 import { useRepositories } from "@/hooks/useRepositories"
+import { useLanguages } from "@/hooks/useLanguages"
 import { useTheme } from "@/hooks/useTheme"
 
 import { RepoCard } from "@/components/RepoCard"
 import { RepoCardSkeleton } from "@/components/RepoCardSkeleton"
 import { Banner } from "@/components/Banner"
+import { Chip } from "@/components/Chip"
 
 import { Repository } from "@/types/repository"
 import { RootStackParamList } from "@/types/navigation"
@@ -34,6 +36,8 @@ const RepoListScreen = () => {
 
   const [shouldShowNetworkBanner, setShouldShowNetworkBanner] = useState(false)
 
+  const { languages, languagesLoading } = useLanguages()
+
   const {
     reposData,
     reposAreFetching,
@@ -41,6 +45,15 @@ const RepoListScreen = () => {
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
+
+  const chipsRef = useRef<FlatList<string> | null>(null)
+
+  useEffect(() => {
+    if (!languages.length) return
+    const index = languages.findIndex((l) => l.toLowerCase() === language)
+    if (index < 0) return
+    chipsRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 })
+  }, [language, languages])
 
   useEffect(() => {
     if (reposError && reposError.message === "Network Error") {
@@ -107,8 +120,26 @@ const RepoListScreen = () => {
     )
   }
 
-  const renderFilterBar = () => (
-    <View style={styles.filterBar}>
+  const renderChip = ({ item: lang }: { item: string }) => {
+    const isSelected = language === lang.toLowerCase()
+    return (
+      <Chip
+        label={lang}
+        isSelected={isSelected}
+        onPress={() => setLanguage(isSelected ? "typescript" : lang.toLowerCase())}
+      />
+    )
+  }
+
+  const renderListContent = () => {
+    if (reposAreFetching) return renderLoading()
+    if (reposError && reposError.message !== "Network Error") return renderError()
+    if (!reposData || reposData.length === 0) return renderEmpty()
+    return null
+  }
+
+  const renderListHeader = () => (
+    <View style={styles.listHeader}>
       <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>Search repositories:</Text>
       <View style={styles.inputContainer}>
         <TextInput
@@ -124,52 +155,40 @@ const RepoListScreen = () => {
         ) : null}
       </View>
 
-      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>Filter by language:</Text>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Filter by language (e.g. typescript)"
-          value={language}
-          onChangeText={setLanguage}
-          style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
+      {!languagesLoading && languages.length > 0 && (
+        <FlatList
+          ref={chipsRef}
+          horizontal
+          data={languages}
+          keyExtractor={(item) => item}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsRow}
+          onScrollToIndexFailed={({ index }) => {
+            setTimeout(() => {
+              chipsRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 })
+            }, 50)
+          }}
+          renderItem={renderChip}
         />
-        {language ? (
-          <TouchableOpacity onPress={() => setLanguage("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
-            <Text style={[styles.clearButtonText, { color: theme.textTertiary }]}>╳</Text>
-          </TouchableOpacity>
-        ) : null}
-      </View>
+      )}
     </View>
   )
-
-  const renderList = () => {
-    if (reposAreFetching) {
-      return renderLoading()
-    }
-
-    if (reposError && reposError.message !== "Network Error") {
-      return renderError()
-    }
-
-    if (!reposData || reposData.length === 0) {
-      return renderEmpty()
-    }
-
-    return (
-      <FlatList
-        data={reposData}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={renderCard}
-      />
-    )
-  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
       {shouldShowNetworkBanner ? (
         <Banner message="Network error, please check your connection" />
       ) : null}
-      {renderFilterBar()}
-      {renderList()}
+
+      {renderListHeader()}
+
+      <FlatList
+        style={styles.repoList}
+        data={reposAreFetching || reposError || !reposData?.length ? [] : reposData}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={renderCard}
+        ListEmptyComponent={renderListContent}
+      />
     </View>
   )
 }

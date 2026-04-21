@@ -31,12 +31,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  filterBar: {
-    paddingHorizontal: 12,
-    paddingBottom: 12,
-    marginBottom: 8,
-    flexDirection: "column",
-  },
   inputLabel: {
     fontSize: 14,
     marginTop: 12,
@@ -62,6 +56,17 @@ const styles = StyleSheet.create({
   },
   clearButtonText: {
     fontSize: 12,
+  },
+  listHeader: {
+    flexShrink: 0,
+  },
+  chipsRow: {
+    flexDirection: "row",
+    paddingVertical: 12,
+    gap: 8,
+  },
+  repoList: {
+    flex: 1,
   },
 })
 
