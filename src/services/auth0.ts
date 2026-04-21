@@ -17,6 +17,7 @@ export const loginWithAuth0 = async (): Promise<string> => {
   const githubToken = decoded["https://github.com/access_token"]
 
   if (!githubToken) {
+    console.warn("[auth0] ID token claims present:", JSON.stringify(decoded))
     throw new Error("GitHub token not found. Ensure the Auth0 Action is configured correctly.")
   }
 

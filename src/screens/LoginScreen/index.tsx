@@ -33,8 +33,9 @@ const LoginScreen = () => {
     setError(null)
     try {
       await loginViaAuth0()
-    } catch {
-      setError("Auth0 login failed. Please try again.")
+    } catch (e) {
+      const message = e instanceof Error ? e.message : "Auth0 login failed. Please try again."
+      setError(message)
     } finally {
       setIsAuth0Loading(false)
     }
