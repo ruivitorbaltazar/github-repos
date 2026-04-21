@@ -1,25 +1,17 @@
-import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query"
-import { fetchRepositories } from "@/api/github"
+import { fetchRepositories, RepoQueryKey } from "@/services/github/repositories"
 import { Repository } from "@/types/repository"
+import { useDebounce } from "@/hooks/useDebounce"
+
+const REFETCH_INTERVAL = 60_000
 
 export const useRepositories = ({ search, language }: { search: string; language: string }) => {
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const debouncedSearch = useDebounce(search)
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDebouncedSearch(search.toLowerCase());
-    }, 400);
-
-    return () => clearTimeout(timeout);
-  }, [search]);
-
-  const refetchInterval = 60000 // 1 minute
-
-  const { data, isFetching, error } = useQuery<Repository[]>({
+  const { data, isFetching, error } = useQuery<Repository[], Error, Repository[], RepoQueryKey>({
     queryKey: ["repositories", { search: debouncedSearch, language }],
     queryFn: fetchRepositories,
-    refetchInterval: refetchInterval,
+    refetchInterval: REFETCH_INTERVAL,
     placeholderData: (previousData) => previousData,
   })
 
