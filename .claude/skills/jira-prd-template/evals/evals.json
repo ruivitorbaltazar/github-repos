@@ -1,0 +1,29 @@
+{
+  "skill_name": "jira-prd-template",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need a PRD for adding multi-factor authentication (MFA) to our user authentication system. Use checklist format for acceptance criteria.",
+      "expected_output": "Skill infers title 'Multi-Factor Authentication', gathers Business Context, Requirements, and Checklist Acceptance Criteria from user inputs with validation. No optional sections requested. Displays complete PRD in session ready for next skill.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Create a PRD for the payment processing refactor from Stripe v2 to v3. Use BDD-style acceptance criteria and include both design links and implementation notes since this is complex.",
+      "expected_output": "Skill infers title 'Stripe v2 to v3 Migration', asks about optional sections (user confirms Design & Mockups and Implementation Notes). Gathers content for each section. Builds PRD with BDD Given/When/Then scenarios, optional Design & Mockups section, and optional Implementation Notes section. Displays complete PRD in session.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "I need a PRD for fixing the checkout abandonment issue. Include both checklist items AND BDD scenarios for acceptance criteria. This feature is high-risk due to payment processing, so include the Risks & Dependencies section.",
+      "expected_output": "Skill infers title 'Checkout Abandonment Fix', asks about optional sections (user confirms Risks & Dependencies). Gathers content for all sections. Builds PRD with both checklist and BDD acceptance criteria, includes comprehensive Risks & Dependencies section. Displays complete PRD in session with all sections clearly separated.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "Create a PRD for the email notification system redesign. Use checklist format for acceptance criteria.",
+      "expected_output": "Skill infers title 'Email Notification System Redesign', asks about optional sections (user chooses none). Gathers Business Context, Requirements, and Checklist Acceptance Criteria with validation. Displays complete mandatory-only PRD in session, ready to pass to Jira creation skill.",
+      "files": []
+    }
+  ]
+}

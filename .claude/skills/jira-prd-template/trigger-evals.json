@@ -1,0 +1,102 @@
+[
+  {
+    "query": "I need to create a PRD for a new dashboard feature that shows real-time analytics. We want users to be able to customize widgets, set alerts, and export reports. What should the acceptance criteria look like?",
+    "should_trigger": true,
+    "reason": "Explicitly asking for PRD with feature details that need structuring"
+  },
+  {
+    "query": "We're building a notification system redesign. Can you help me document what exactly needs to be implemented and how we'll verify it's working correctly?",
+    "should_trigger": true,
+    "reason": "Asking for documentation of requirements and verification criteria - core PRD needs"
+  },
+  {
+    "query": "Create a specification for the new user onboarding flow. Include business goals, technical requirements, and how we'll test it.",
+    "should_trigger": true,
+    "reason": "Asking for structured specification covering goals, requirements, and testing"
+  },
+  {
+    "query": "I need to document the API rate limiting feature we're adding. Should include business context, what's being built, and acceptance criteria.",
+    "should_trigger": true,
+    "reason": "Clear request for PRD-like structure for a feature"
+  },
+  {
+    "query": "Write a PRD for the payment processing v2 migration. We're moving from our legacy system to Stripe, and I need both checklist and BDD-style test scenarios.",
+    "should_trigger": true,
+    "reason": "Explicit PRD request with specific format requirements"
+  },
+  {
+    "query": "I've got this feature request to add dark mode. Help me put together the requirements doc with acceptance criteria so the team knows what to build.",
+    "should_trigger": true,
+    "reason": "Asking to structure requirements with acceptance criteria for a feature"
+  },
+  {
+    "query": "Our product manager wants me to define what 'done' looks like for the checkout flow optimization. Can you guide me through creating that documentation?",
+    "should_trigger": true,
+    "reason": "Asking for structured definition of requirements and completion criteria"
+  },
+  {
+    "query": "I need a document that clearly states what the mobile app authentication redesign should do, what the success metrics are, and how we'll verify each feature works.",
+    "should_trigger": true,
+    "reason": "Requesting structured documentation of goals, features, and verification"
+  },
+  {
+    "query": "Create a Jira ticket for the user profile feature.",
+    "should_trigger": false,
+    "reason": "User just wants to create a ticket, not document requirements. Different workflow."
+  },
+  {
+    "query": "Can you search Jira for any existing tickets about user authentication?",
+    "should_trigger": false,
+    "reason": "Asking to search/retrieve, not create documentation"
+  },
+  {
+    "query": "I'm reviewing the database schema for the new payments feature. Any suggestions for optimization?",
+    "should_trigger": false,
+    "reason": "Code review task, not requirements documentation"
+  },
+  {
+    "query": "Write a blog post explaining how we implemented our new API versioning strategy.",
+    "should_trigger": false,
+    "reason": "Documentation/blog content, not requirements/PRD"
+  },
+  {
+    "query": "Analyze this existing Jira epic and break it down into story points.",
+    "should_trigger": false,
+    "reason": "Task breakdown/estimation, not creating new PRD"
+  },
+  {
+    "query": "Generate API documentation for the /users endpoint, including request/response schemas.",
+    "should_trigger": false,
+    "reason": "API docs, not feature requirements PRD"
+  },
+  {
+    "query": "I need help writing user stories for the new export feature. Should be in 'As a [user], I want [feature] so that [benefit]' format.",
+    "should_trigger": false,
+    "reason": "User stories are different from PRD - more narrative, less structured"
+  },
+  {
+    "query": "Summarize what was discussed in our product strategy meeting about the upcoming redesign.",
+    "should_trigger": false,
+    "reason": "Meeting summary, not structured requirements documentation"
+  },
+  {
+    "query": "I need to set up a feature called 'Smart Caching' that will reduce database load. We want it to cache frequently accessed data, invalidate on updates, and have a 5-minute TTL. What do I need to document to get this built right?",
+    "should_trigger": true,
+    "reason": "User has a feature idea and is asking what to document - PRD structure is the answer"
+  },
+  {
+    "query": "The team needs clear requirements for the password reset flow redesign, including business goals, technical specs, and how QA will verify each piece works.",
+    "should_trigger": true,
+    "reason": "Asking for structured requirements with goals, specs, and verification"
+  },
+  {
+    "query": "I have a Confluence page with scattered notes about the search feature. Can you help organize this into a proper document that the dev team can build from?",
+    "should_trigger": true,
+    "reason": "Asking to structure scattered requirements into a proper PRD"
+  },
+  {
+    "query": "Review the pull request for the new search implementation. Does it meet the requirements we set?",
+    "should_trigger": false,
+    "reason": "Code review task, not requirements creation"
+  }
+]

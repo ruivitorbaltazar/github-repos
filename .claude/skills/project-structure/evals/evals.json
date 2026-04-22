@@ -1,0 +1,114 @@
+{
+  "skill_name": "project-structure",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Where should I add a new LanguageFilterChip component?",
+      "expected_output": "Structural guidance: src/components/LanguageFilterChip/ with index.tsx + styles.ts, named export, @/ import path.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "correct-parent-folder",
+          "text": "Response states src/components/ as the parent folder",
+          "type": "contains"
+        },
+        {
+          "id": "pascal-case-folder",
+          "text": "Response uses PascalCase folder name (LanguageFilterChip)",
+          "type": "contains"
+        },
+        {
+          "id": "index-tsx-listed",
+          "text": "Response lists index.tsx as one of the files to create",
+          "type": "contains"
+        },
+        {
+          "id": "styles-ts-listed",
+          "text": "Response lists styles.ts as one of the files to create",
+          "type": "contains"
+        },
+        {
+          "id": "at-alias-import",
+          "text": "Response shows @/ alias in import example (not relative path)",
+          "type": "contains"
+        },
+        {
+          "id": "no-implementation-code",
+          "text": "Response does not contain JSX implementation code (no return statement, no View/Text components rendered)",
+          "type": "not_contains"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Where and how should I add an analytics service for screen views?",
+      "expected_output": "Structural guidance: src/services/analyticsService.ts (Service suffix), named export, @/ import path.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "correct-parent-folder",
+          "text": "Response states src/services/ as the parent folder",
+          "type": "contains"
+        },
+        {
+          "id": "service-suffix",
+          "text": "Response uses Service suffix in the file name (analyticsService.ts or similar)",
+          "type": "contains"
+        },
+        {
+          "id": "ts-extension",
+          "text": "Response uses .ts extension (not .js or .tsx) for the service file",
+          "type": "contains"
+        },
+        {
+          "id": "at-alias-import",
+          "text": "Response shows @/ alias in import example",
+          "type": "contains"
+        },
+        {
+          "id": "no-implementation-code",
+          "text": "Response does not contain full function implementations (no async function bodies with business logic)",
+          "type": "not_contains"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "What files do I need to create for a new SettingsScreen?",
+      "expected_output": "Structural guidance: src/screens/SettingsScreen/ with index.tsx + styles.ts, Screen suffix in folder name, default export.",
+      "files": [],
+      "assertions": [
+        {
+          "id": "correct-parent-folder",
+          "text": "Response states src/screens/ as the parent folder",
+          "type": "contains"
+        },
+        {
+          "id": "screen-suffix",
+          "text": "Response uses Screen suffix in the folder name (SettingsScreen)",
+          "type": "contains"
+        },
+        {
+          "id": "index-tsx-listed",
+          "text": "Response lists index.tsx as one of the files to create",
+          "type": "contains"
+        },
+        {
+          "id": "styles-ts-listed",
+          "text": "Response lists styles.ts as one of the files to create",
+          "type": "contains"
+        },
+        {
+          "id": "default-export",
+          "text": "Response mentions default export for the screen",
+          "type": "contains"
+        },
+        {
+          "id": "at-alias-import",
+          "text": "Response shows @/ alias in import example",
+          "type": "contains"
+        }
+      ]
+    }
+  ]
+}
