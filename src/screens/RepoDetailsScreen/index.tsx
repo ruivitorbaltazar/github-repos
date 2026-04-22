@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
 } from "react-native"
 import { RouteProp, useRoute } from "@react-navigation/native"
+import { useTranslation } from "react-i18next"
 
 import { RootStackParamList } from "@/types/navigation"
 import { useTheme } from "@/hooks/useTheme"
@@ -13,6 +14,7 @@ import { useTheme } from "@/hooks/useTheme"
 import { styles } from "./styles"
 
 const RepoDetailsScreen = () => {
+  const { t } = useTranslation()
   const route = useRoute<RouteProp<RootStackParamList, "RepoDetails">>()
   const { repo } = route.params
 
@@ -49,7 +51,7 @@ const RepoDetailsScreen = () => {
           style={[styles.actionText, { color: theme.textTertiary }]}
           onPress={() => Linking.openURL(repo.html_url)}
         >
-          Open on GitHub
+          {t("repoDetails.openOnGitHub")}
         </Text>
       </TouchableOpacity>
     </View>

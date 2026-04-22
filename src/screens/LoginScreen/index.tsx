@@ -1,11 +1,13 @@
 import { useState } from "react"
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
+import { useTranslation } from "react-i18next"
 import { useTheme } from "@/hooks/useTheme"
 import { useAuth } from "@/hooks/useAuth"
 import { validateToken } from "@/services/github/auth"
 import { styles } from "./styles"
 
 const LoginScreen = () => {
+  const { t } = useTranslation()
   const { theme } = useTheme()
   const { login, loginViaAuth0 } = useAuth()
 
@@ -23,7 +25,7 @@ const LoginScreen = () => {
       await validateToken(token.trim())
       await login(token.trim())
     } catch {
-      setError("Invalid token. Please check and try again.")
+      setError(t("login.invalidToken"))
     } finally {
       setIsPATLoading(false)
     }
@@ -35,7 +37,7 @@ const LoginScreen = () => {
     try {
       await loginViaAuth0()
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Auth0 login failed. Please try again."
+      const message = e instanceof Error ? e.message : t("login.auth0Failed")
       setError(message)
     } finally {
       setIsAuth0Loading(false)
@@ -46,9 +48,9 @@ const LoginScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
-      <Text style={[styles.title, { color: theme.textPrimary }]}>GitHub Repos</Text>
+      <Text style={[styles.title, { color: theme.textPrimary }]}>{t("login.appTitle")}</Text>
       <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
-        Sign in to continue.
+        {t("login.subtitle")}
       </Text>
 
       <TouchableOpacity
@@ -60,23 +62,23 @@ const LoginScreen = () => {
           <ActivityIndicator color={theme.textPrimary} />
         ) : (
           <Text style={[styles.auth0ButtonText, { color: theme.textPrimary }]}>
-            Sign in with Auth0
+            {t("login.signInWithAuth0")}
           </Text>
         )}
       </TouchableOpacity>
 
       <View style={styles.divider}>
         <View style={[styles.dividerLine, { backgroundColor: theme.bgTertiary }]} />
-        <Text style={[styles.dividerText, { color: theme.textTertiary }]}>or</Text>
+        <Text style={[styles.dividerText, { color: theme.textTertiary }]}>{t("login.or")}</Text>
         <View style={[styles.dividerLine, { backgroundColor: theme.bgTertiary }]} />
       </View>
 
-      <Text style={[styles.label, { color: theme.textSecondary }]}>Personal Access Token</Text>
+      <Text style={[styles.label, { color: theme.textSecondary }]}>{t("login.patLabel")}</Text>
       <View style={[styles.inputWrapper, { backgroundColor: theme.bgTertiary }]}>
         <TextInput
           value={token}
           onChangeText={setToken}
-          placeholder="github_pat_xxxxxxxxxxxx"
+          placeholder={t("login.patPlaceholder")}
           secureTextEntry={!showToken}
           clearButtonMode="while-editing"
           autoCapitalize="none"
@@ -85,7 +87,7 @@ const LoginScreen = () => {
         />
         <TouchableOpacity onPress={() => setShowToken(v => !v)} style={styles.showHideButton}>
           <Text style={{ color: theme.textSecondary, fontSize: 13 }}>
-            {showToken ? "Hide" : "Show"}
+            {showToken ? t("login.hide") : t("login.show")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -102,7 +104,7 @@ const LoginScreen = () => {
         {isPATLoading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Sign in</Text>
+          <Text style={styles.buttonText}>{t("login.signIn")}</Text>
         )}
       </TouchableOpacity>
     </View>
