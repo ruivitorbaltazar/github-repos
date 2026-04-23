@@ -8,7 +8,7 @@ const REFETCH_INTERVAL = 60_000
 export const useRepositories = ({ search, language }: { search: string; language: string }) => {
   const debouncedSearch = useDebounce(search)
 
-  const { data, isFetching, isFetchingNextPage, error, fetchNextPage, hasNextPage } =
+  const { data, isFetching, isFetchingNextPage, error, fetchNextPage, hasNextPage, refetch, isRefetching } =
     useInfiniteQuery<RepositoriesPage, Error, InfiniteData<RepositoriesPage>, RepoQueryKey, number>({
       queryKey: ["repositories", { search: debouncedSearch, language }],
       queryFn: fetchRepositories,
@@ -27,5 +27,7 @@ export const useRepositories = ({ search, language }: { search: string; language
     reposError: error,
     fetchNextPage,
     hasNextPage: hasNextPage ?? false,
+    refetch,
+    isRefetching,
   }
 }
