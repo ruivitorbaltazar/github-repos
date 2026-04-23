@@ -1,10 +1,12 @@
 import { QueryFunctionContext } from "@tanstack/react-query"
-import { Repository } from "@/types/repository"
+import { RepositoriesPage } from "@/types/repository"
 import { githubClient } from "./client"
+
+export const PER_PAGE = 20
 
 export type RepoQueryKey = readonly ["repositories", { search: string; language: string }]
 
-export const fetchRepositories = async ({ queryKey }: QueryFunctionContext<RepoQueryKey>): Promise<Repository[]> => {
+export const fetchRepositories = async ({ queryKey, pageParam }: QueryFunctionContext<RepoQueryKey, number>): Promise<RepositoriesPage> => {
   const [_key, { search, language }] = queryKey
   const query = [
     search,
@@ -18,9 +20,15 @@ export const fetchRepositories = async ({ queryKey }: QueryFunctionContext<RepoQ
         q: query,
         sort: "stars",
         order: "desc",
+        per_page: PER_PAGE,
+        page: pageParam,
       },
     }
   )
 
-  return response.data.items
+  return {
+    items: response.data.items,
+    total_count: response.data.total_count,
+    page: pageParam,
+  }
 }

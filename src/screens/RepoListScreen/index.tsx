@@ -41,7 +41,10 @@ const RepoListScreen = () => {
   const {
     reposData,
     reposAreFetching,
+    reposFetchingNextPage,
     reposError,
+    fetchNextPage,
+    hasNextPage,
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
@@ -188,6 +191,9 @@ const RepoListScreen = () => {
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCard}
         ListEmptyComponent={renderListContent}
+        onEndReached={() => { if (hasNextPage && !reposFetchingNextPage) fetchNextPage() }}
+        onEndReachedThreshold={0.5}
+        ListFooterComponent={reposFetchingNextPage ? <RepoCardSkeleton /> : null}
       />
     </View>
   )
