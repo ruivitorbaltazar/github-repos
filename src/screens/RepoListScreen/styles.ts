@@ -68,6 +68,30 @@ const styles = StyleSheet.create({
   repoList: {
     flex: 1,
   },
+  fab: {
+    position: "absolute",
+    bottom: 24,
+    right: 24,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: "#007AFF",
+    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
+    zIndex: 10,
+  },
+  fabInner: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fabText: {
+    color: "#FFFFFF",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
 })
 
 export { styles }

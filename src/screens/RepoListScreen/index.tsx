@@ -5,7 +5,11 @@ import {
   TextInput,
   FlatList,
   TouchableOpacity,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native"
+import { FlashList, FlashListRef } from "@shopify/flash-list"
+import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
@@ -45,11 +49,27 @@ const RepoListScreen = () => {
     reposError,
     fetchNextPage,
     hasNextPage,
+    refetch,
+    isRefetching,
   } = useRepositories({ search, language })
 
   const navigation = useNavigation<NavigationProp>()
 
   const chipsRef = useRef<FlatList<string> | null>(null)
+  const repoListRef = useRef<FlashListRef<Repository> | null>(null)
+  const fabOpacity = useSharedValue(0)
+  const [fabVisible, setFabVisible] = useState(false)
+
+  const fabAnimatedStyle = useAnimatedStyle(() => ({
+    opacity: fabOpacity.value,
+  }))
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const y = event.nativeEvent.contentOffset.y
+    const shouldShow = y > 300
+    fabOpacity.value = withTiming(shouldShow ? 1 : 0, { duration: 200 })
+    setFabVisible(shouldShow)
+  }
 
   useEffect(() => {
     if (!languages.length) return
@@ -185,8 +205,8 @@ const RepoListScreen = () => {
 
       {renderListHeader()}
 
-      <FlatList
-        style={styles.repoList}
+      <FlashList
+        ref={repoListRef}
         data={reposAreFetching || reposError || !reposData?.length ? [] : reposData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCard}
@@ -194,7 +214,25 @@ const RepoListScreen = () => {
         onEndReached={() => { if (hasNextPage && !reposFetchingNextPage) fetchNextPage() }}
         onEndReachedThreshold={0.5}
         ListFooterComponent={reposFetchingNextPage ? <RepoCardSkeleton /> : null}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        refreshing={isRefetching}
+        onRefresh={refetch}
       />
+
+      <Animated.View
+        style={[styles.fab, fabAnimatedStyle]}
+        pointerEvents={fabVisible ? "auto" : "none"}
+      >
+        <TouchableOpacity
+          onPress={() => repoListRef.current?.scrollToTop({ animated: true })}
+          style={styles.fabInner}
+          accessibilityLabel="Scroll to top"
+          accessibilityRole="button"
+        >
+          <Text style={styles.fabText}>↑</Text>
+        </TouchableOpacity>
+      </Animated.View>
     </View>
   )
 }
