@@ -1,24 +1,10 @@
-type Repository = {
-  id: number
-  name: string
-  full_name: string
-  description: string
-  stargazers_count: number
-  language: string
-  html_url: string
-  forks_count: number
-  open_issues_count: number
-  owner: {
-    login: string
-    avatar_url: string
-  }
-}
+import { Repository } from "@/schemas/github/repository"
 
 type RepoCardProps = {
   name: string
-  description: string
+  description: string | null
   stars: number
-  language?: string
+  language?: string | null
   owner?: {
     login: string
     avatar_url: string
