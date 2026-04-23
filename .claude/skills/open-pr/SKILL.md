@@ -94,14 +94,56 @@ gh pr create \
 
 If the command succeeds, the PR is created and opened in your browser (or CLI reports the URL).
 
+### Step 5.5: Transition Jira Ticket to Review
+
+After the PR is created, move the associated Jira ticket from "Ongoing" to "Review".
+
+**5.5a — Extract ticket ID from branch name**
+
+Parse the current branch name for a `SCRUM-\d+` pattern:
+```bash
+ticket_id=$(git rev-parse --abbrev-ref HEAD | grep -oE 'SCRUM-[0-9]+' | head -1)
+```
+
+If no ticket ID is found, skip the Jira transition silently (not all branches are Jira-linked).
+
+**5.5b — Discover available transitions dynamically**
+
+Query for available transitions on the ticket:
+```
+atlassian:getTransitionsForJiraIssue
+  cloudId: workshop-pink.atlassian.net
+  issueIdOrKey: {ticket_id}
+```
+
+Look for a transition named "Review", "In Review", or "Code Review". Extract its ID.
+
+**5.5c — Apply the transition**
+
+Transition the ticket to Review:
+```
+atlassian:transitionJiraIssue
+  cloudId: workshop-pink.atlassian.net
+  issueIdOrKey: {ticket_id}
+  transition:
+    id: {resolved transition ID}
+```
+
+**Error handling:** 
+- If the ticket ID cannot be extracted, skip silently.
+- If no "Review"-named transition is found, note "Jira transition not available" in the success report.
+- If the transition fails (e.g., ticket is not in "Ongoing"), report the error but do not block the workflow.
+- Never let Jira issues block PR creation; this is a best-effort enhancement.
+
 ### Step 6: Report Success
 
-Once the PR is created, display:
+Once the PR is created and Jira ticket is transitioned (if applicable), display:
 - **PR number** and **URL** (formatted as a link)
 - **Title:** The PR title
 - **Assignee:** You (ruivitorbaltazar)
 - **Reviewer:** rafaellbaptista
 - **Status:** "Ready for review"
+- **Jira ticket** (if extracted): `{ticket_id}` → moved to **Review** (or "Jira transition skipped: {reason}" if not available)
 - **Next step hint:** "PR is open for review. Monitor for feedback or checks."
 
 ## Key Behaviors
@@ -114,9 +156,14 @@ Once the PR is created, display:
    - Assignee: `ruivitorbaltazar` (always the current user)
    - Reviewer: `rafaellbaptista` (always the same reviewer)
 
-4. **Draft-safe.** The PR is created as a regular PR (not a draft). If you want to mark it as a draft, the user can do so manually via GitHub.
+4. **Jira ticket transition.** When a PR is created from a Jira-linked branch (e.g., `feat/SCRUM-42-...`), the ticket is automatically transitioned from "Ongoing" to "Review". This keeps the board in sync with the PR workflow.
+   - Ticket ID is extracted from the branch name using the `SCRUM-\d+` pattern.
+   - Jira transitions are best-effort — if the transition fails or is unavailable, the PR is still created and a note is included in the success report.
+   - Non-Jira branches skip the transition silently.
 
-5. **No merge on create.** The skill only opens the PR. Merging is done manually via GitHub after review.
+5. **Draft-safe.** The PR is created as a regular PR (not a draft). If you want to mark it as a draft, the user can do so manually via GitHub.
+
+6. **No merge on create.** The skill only opens the PR. Merging is done manually via GitHub after review.
 
 ## Error Handling
 
@@ -154,13 +201,22 @@ Once the PR is created, display:
      --reviewer rafaellbaptista \
      --base main
    ```
-7. Reports:
+7. Extracts ticket ID: `SCRUM-42`
+8. Transitions Jira ticket from "Ongoing" to "Review":
+   ```
+   atlassian:getTransitionsForJiraIssue
+     cloudId: workshop-pink.atlassian.net
+     issueIdOrKey: SCRUM-42
+   ```
+   Finds transition "Review" and applies it.
+9. Reports:
    ```
    ✓ PR #15 created
    ✓ URL: https://github.com/user/repo/pull/15
    ✓ Title: Implement user login screen with styled button
    ✓ Assigned to: ruivitorbaltazar
    ✓ Reviewer: rafaellbaptista
+   ✓ Jira ticket: SCRUM-42 → moved to Review
    
    Ready for review!
    ```
