@@ -1,6 +1,7 @@
 ---
 name: open-pr
 description: Create and open a pull request on GitHub. Trigger this skill when you're ready to merge your feature branch into main—the skill compares your work against main, drafts a PR title and body from the diff and commit history, and opens the PR with the correct assignee and reviewer. Use this after `/save-work` to complete the feature workflow.
+disable-model-invocation: true
 ---
 
 # Open PR Skill

@@ -1,6 +1,7 @@
 ---
 name: save-work
 description: Stage, commit, and push your work to the remote branch. Trigger this skill when you've finished making changes and want to save them—the skill automatically stages all files, generates a concise commit message based on the diff, and pushes to the origin. Use this to checkpoint your work while on a feature branch created by `/start-work`.
+disable-model-invocation: true
 ---
 
 # Save Work Skill

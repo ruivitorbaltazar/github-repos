@@ -1,6 +1,7 @@
 ---
 name: create-ticket
 description: Create a Jira ticket with a structured PRD. Trigger this skill whenever the user wants to create a new Jira ticket for a feature, task, or bug—whether they provide a PRD or need to build one interactively. The skill will either accept an existing PRD from session context, or invoke the jira-prd-template skill to guide the user through PRD creation step-by-step. Once the PRD is ready, the skill creates a Jira ticket in the TODO column and assigns it to the user. Use this skill at the start of any feature workflow.
+disable-model-invocation: true
 ---
 
 # Create Ticket Skill
@@ -44,25 +45,20 @@ From the confirmed PRD, extract:
 
 ### Step 4: Discover Active Sprint
 
-Before creating the ticket, fetch the active sprint from the SCRUM board:
+The SCRUM board ID is `1`. Fetch the active sprint directly:
 
-1. Make a request to the Jira REST API to get the active sprint:
+1. Make a request to the Jira REST API:
    ```
-   GET https://workshop-pink.atlassian.net/rest/agile/1.0/board?name=SCRUM
-   ```
-   
-2. Extract the board ID from the response, then fetch the sprints:
-   ```
-   GET https://workshop-pink.atlassian.net/rest/agile/1.0/board/{boardId}/sprint?state=active
+   GET https://workshop-pink.atlassian.net/rest/agile/1.0/board/1/sprint?state=active
    ```
 
-3. Extract the `id` field from the active sprint. If no active sprint exists, you can either:
+2. Extract the `id` field from the active sprint. If no active sprint exists:
    - Create a ticket without sprint assignment (it will go to backlog)
    - Prompt the user to activate a sprint first
 
-4. Store the active sprint ID as `sprintId` (e.g., `123`).
+3. Store the active sprint ID as `sprintId` (e.g., `123`).
 
-**Note:** These are external REST API calls. Since the Atlassian MCP tools don't directly expose sprint discovery, you may need to use the WebFetch tool or similar to make these HTTP requests with authentication.
+**Note:** This is an external REST API call. Since the Atlassian MCP tools don't directly expose sprint discovery, you may need to use the WebFetch tool or similar to make this HTTP request with authentication.
 
 ### Step 5: Create Jira Ticket with Sprint Assignment
 
@@ -122,8 +118,7 @@ Once the ticket is created, display:
    - Drafts Acceptance Criteria → Confirmed
    - Shows complete PRD → Confirmed
 4. Discovers active sprint:
-   - Fetches SCRUM board → Board ID: 1
-   - Fetches active sprint → Sprint ID: 5, Name: "Sprint 23"
+   - Fetches active sprint from board 1 → Sprint ID: 5, Name: "Sprint 23"
 5. Creates Jira ticket:
    - Summary: "User Login Screen"
    - Description: [Full PRD markdown]

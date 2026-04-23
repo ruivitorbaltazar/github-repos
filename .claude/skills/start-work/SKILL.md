@@ -1,6 +1,7 @@
 ---
 name: start-work
 description: Create a feature branch and transition a Jira ticket to In Progress. Trigger this skill when the user is ready to start implementing a ticket—they'll select a ticket from the TODO column, the skill creates a feature branch with a standard naming convention, checks it out, and moves the ticket to the Ongoing column. Use this after creating a ticket with `/create-ticket`.
+disable-model-invocation: true
 ---
 
 # Start Work Skill
