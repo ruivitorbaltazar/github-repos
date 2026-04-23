@@ -42,9 +42,31 @@ From the confirmed PRD, extract:
 - **Project Key:** `SCRUM`
 - **Issue Type:** `Task` (or ask the user if they prefer `Story` or `Bug`)
 
-### Step 4: Create Jira Ticket
+### Step 4: Discover Active Sprint
 
-Use the Atlassian MCP to create the ticket:
+Before creating the ticket, fetch the active sprint from the SCRUM board:
+
+1. Make a request to the Jira REST API to get the active sprint:
+   ```
+   GET https://workshop-pink.atlassian.net/rest/agile/1.0/board?name=SCRUM
+   ```
+   
+2. Extract the board ID from the response, then fetch the sprints:
+   ```
+   GET https://workshop-pink.atlassian.net/rest/agile/1.0/board/{boardId}/sprint?state=active
+   ```
+
+3. Extract the `id` field from the active sprint. If no active sprint exists, you can either:
+   - Create a ticket without sprint assignment (it will go to backlog)
+   - Prompt the user to activate a sprint first
+
+4. Store the active sprint ID as `sprintId` (e.g., `123`).
+
+**Note:** These are external REST API calls. Since the Atlassian MCP tools don't directly expose sprint discovery, you may need to use the WebFetch tool or similar to make these HTTP requests with authentication.
+
+### Step 5: Create Jira Ticket with Sprint Assignment
+
+Use the Atlassian MCP to create the ticket with sprint assignment:
 
 ```
 atlassian:createJiraIssue
@@ -54,14 +76,20 @@ atlassian:createJiraIssue
   summary: [PRD title]
   description: [Full PRD markdown]
   assignee_account_id: rui@pinkroom.dev
+  additional_fields: {
+    "customfield_10020": [sprintId]  # Sprint custom field
+  }
 ```
 
-### Step 5: Report Success
+If sprint discovery failed or no active sprint exists, omit the `customfield_10020` field and the ticket will be created in the backlog.
+
+### Step 6: Report Success
 
 Once the ticket is created, display:
 - **Ticket ID** and **URL** (formatted as a link)
-- **Status:** `TODO` column
+- **Status:** If sprint was assigned: on the board in the `TODO` column. If no sprint: in the backlog.
 - **Assigned to:** You (rui@pinkroom.dev)
+- **Sprint:** The active sprint name (if assigned)
 - **Next step hint:** "Ready to start work? Run `/start-work` to create a branch and move this ticket to Ongoing."
 
 ## Key Behaviors
@@ -74,7 +102,9 @@ Once the ticket is created, display:
 
 4. **Automatic assignment.** Always assign the ticket to `rui@pinkroom.dev` (the user) immediately upon creation.
 
-5. **Clear next step.** Suggest `/start-work` at the end so the user knows the workflow continues.
+5. **Board placement by default.** Always attempt to discover and assign the active sprint. This ensures tickets are placed on the board rather than in the backlog. If no active sprint exists, the ticket will be created in the backlog (this is acceptable but not ideal).
+
+6. **Clear next step.** Suggest `/start-work` at the end so the user knows the workflow continues.
 
 ## Example Workflow
 
@@ -91,11 +121,15 @@ Once the ticket is created, display:
    - Drafts Requirements → Confirmed
    - Drafts Acceptance Criteria → Confirmed
    - Shows complete PRD → Confirmed
-4. Creates Jira ticket:
+4. Discovers active sprint:
+   - Fetches SCRUM board → Board ID: 1
+   - Fetches active sprint → Sprint ID: 5, Name: "Sprint 23"
+5. Creates Jira ticket:
    - Summary: "User Login Screen"
    - Description: [Full PRD markdown]
    - Assignee: rui@pinkroom.dev
-5. Reports: "✓ Ticket SCRUM-42 created in TODO column. Run `/start-work` to start."
+   - Sprint: Sprint 23 (via `customfield_10020: [5]`)
+6. Reports: "✓ Ticket SCRUM-42 created and placed on Sprint 23 board in TODO column. Run `/start-work` to start."
 
 ---
 
@@ -106,5 +140,6 @@ Once the ticket is created, display:
 **Skill responds:**
 1. Finds existing PRD in context
 2. Extracts title → "Multi-Factor Authentication (MFA)"
-3. Creates ticket with full PRD as description
-4. Reports: "✓ Ticket SCRUM-43 created in TODO column."
+3. Discovers active sprint → Sprint ID: 5, Name: "Sprint 23"
+4. Creates ticket with full PRD as description and sprint assignment
+5. Reports: "✓ Ticket SCRUM-43 created and placed on Sprint 23 board in TODO column."
