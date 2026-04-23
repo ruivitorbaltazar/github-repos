@@ -1,0 +1,34 @@
+{
+  "navigation": {
+    "signIn": "Sign in",
+    "repositories": "Repositories",
+    "signOut": "Sign out"
+  },
+  "login": {
+    "appTitle": "GitHub Repos",
+    "subtitle": "Sign in to continue.",
+    "signInWithAuth0": "Sign in with Auth0",
+    "or": "or",
+    "patLabel": "Personal Access Token",
+    "patPlaceholder": "github_pat_xxxxxxxxxxxx",
+    "hide": "Hide",
+    "show": "Show",
+    "signIn": "Sign in",
+    "invalidToken": "Invalid token. Please check and try again.",
+    "auth0Failed": "Auth0 login failed. Please try again."
+  },
+  "repoList": {
+    "searchLabel": "Search repositories:",
+    "searchPlaceholder": "Search repositories...",
+    "networkError": "Network error, please check your connection",
+    "errorHeading": "Oops!",
+    "errorBody": "Something went wrong while fetching repositories.",
+    "unknownError": "Unknown error",
+    "retryButton": "Try again",
+    "emptyHeading": "No repositories found",
+    "emptyBody": "We couldn't find any repositories matching your criteria."
+  },
+  "repoDetails": {
+    "openOnGitHub": "Open on GitHub"
+  }
+}
