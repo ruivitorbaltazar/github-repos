@@ -14,6 +14,12 @@ type Repository = {
   }
 }
 
+type RepositoriesPage = {
+  items: Repository[]
+  total_count: number
+  page: number
+}
+
 type RepoCardProps = {
   name: string
   description: string
@@ -28,5 +34,6 @@ type RepoCardProps = {
 
 export {
   Repository,
+  RepositoriesPage,
   RepoCardProps,
 }
