@@ -1,0 +1,1736 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "pink-room-repo-browser",
+    "languages": [
+      "javascript",
+      "json",
+      "markdown",
+      "typescript"
+    ],
+    "frameworks": [
+      "Expo",
+      "React",
+      "React Native",
+      "React Navigation",
+      "TanStack Query",
+      "TypeScript"
+    ],
+    "description": "A React Native application that allows users to browse, search, and explore GitHub repositories with features including debounced search, language filtering, dark mode support, and offline capability using TanStack Query for efficient data caching.",
+    "analyzedAt": "2026-04-24T15:13:36.385Z",
+    "gitCommitHash": "29f6aef034e918c2ccdb65796601b4264ffae052"
+  },
+  "nodes": [
+    {
+      "id": "file:src/types/navigation.ts",
+      "type": "file",
+      "name": "navigation.ts",
+      "filePath": "src/types/navigation.ts",
+      "summary": "Navigation type definitions for React Navigation stack, defining the login, repository list, and repository details screens with their parameters.",
+      "tags": [
+        "type-definition",
+        "navigation",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/types/repository.ts",
+      "type": "file",
+      "name": "repository.ts",
+      "filePath": "src/types/repository.ts",
+      "summary": "Repository data type definitions including Repository, RepositoriesPage for paginated results, and RepoCardProps for component rendering.",
+      "tags": [
+        "type-definition",
+        "data-model",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/types/theme.ts",
+      "type": "file",
+      "name": "theme.ts",
+      "filePath": "src/types/theme.ts",
+      "summary": "Theme type definitions for the application, including ThemeMode (light/dark/system) and Theme color palette structure.",
+      "tags": [
+        "type-definition",
+        "theming",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/themes/dark.ts",
+      "type": "file",
+      "name": "dark.ts",
+      "filePath": "src/themes/dark.ts",
+      "summary": "Dark theme configuration with color values for text, background, and shadow elements conforming to the Theme interface.",
+      "tags": [
+        "theming",
+        "configuration",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/themes/index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "src/themes/index.ts",
+      "summary": "Barrel export file re-exporting both light and dark theme definitions for convenient module-level access.",
+      "tags": [
+        "barrel",
+        "theming",
+        "entry-point"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/themes/light.ts",
+      "type": "file",
+      "name": "light.ts",
+      "filePath": "src/themes/light.ts",
+      "summary": "Light theme configuration with color values for text, background, and shadow elements conforming to the Theme interface.",
+      "tags": [
+        "theming",
+        "configuration",
+        "exports"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/contexts/AuthContext.ts",
+      "type": "file",
+      "name": "AuthContext.ts",
+      "filePath": "src/contexts/AuthContext.ts",
+      "summary": "React Context definition for authentication state and methods, supporting both PAT and Auth0 login methods with token management.",
+      "tags": [
+        "context",
+        "authentication",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/contexts/AuthProvider.tsx",
+      "type": "file",
+      "name": "AuthProvider.tsx",
+      "filePath": "src/contexts/AuthProvider.tsx",
+      "summary": "AuthContext provider component that manages authentication state via SecureStore, supporting PAT and Auth0 login methods with token persistence and logout.",
+      "tags": [
+        "provider",
+        "authentication",
+        "context",
+        "service"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/contexts/ThemeContext.tsx",
+      "type": "file",
+      "name": "ThemeContext.tsx",
+      "filePath": "src/contexts/ThemeContext.tsx",
+      "summary": "React Context definition for theme state and mode management, providing access to resolved theme objects and mode switching functionality.",
+      "tags": [
+        "context",
+        "theming",
+        "type-definition"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/contexts/ThemeProvider.tsx",
+      "type": "file",
+      "name": "ThemeProvider.tsx",
+      "filePath": "src/contexts/ThemeProvider.tsx",
+      "summary": "ThemeContext provider component that resolves system theme preference and selected mode, memoizing theme and mode values for efficient rendering.",
+      "tags": [
+        "provider",
+        "theming",
+        "context"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:App.tsx",
+      "type": "file",
+      "name": "App.tsx",
+      "filePath": "App.tsx",
+      "summary": "Main React Native application component that sets up provider hierarchy for theme, authentication, and React Query state management.",
+      "tags": [
+        "entry-point",
+        "component",
+        "providers"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:index.ts",
+      "type": "file",
+      "name": "index.ts",
+      "filePath": "index.ts",
+      "summary": "Expo application entry point that registers the root component and initializes the application environment.",
+      "tags": [
+        "entry-point",
+        "bootstrap"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:app.config.js",
+      "type": "file",
+      "name": "app.config.js",
+      "filePath": "app.config.js",
+      "summary": "Expo configuration file defining app metadata, native platform settings, plugins, and build configuration for iOS, Android, and web.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "deployment"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Expo app.config.js uses environment variables for Auth0 domain configuration, enabling environment-specific builds."
+    },
+    {
+      "id": "file:src/hooks/useAuth.ts",
+      "type": "file",
+      "name": "useAuth.ts",
+      "filePath": "src/hooks/useAuth.ts",
+      "summary": "Custom hook that provides access to authentication context with error checking to ensure usage within AuthProvider.",
+      "tags": [
+        "hook",
+        "authentication",
+        "context"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useAuth.ts:useAuth",
+      "type": "function",
+      "name": "useAuth",
+      "filePath": "src/hooks/useAuth.ts",
+      "lineRange": [
+        4,
+        10
+      ],
+      "summary": "Retrieves auth context with guard clause to prevent usage outside of AuthProvider.",
+      "tags": [
+        "hook",
+        "context-consumer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useDebounce.ts",
+      "type": "file",
+      "name": "useDebounce.ts",
+      "filePath": "src/hooks/useDebounce.ts",
+      "summary": "Custom hook that debounces string input values with configurable delay and automatic case conversion.",
+      "tags": [
+        "hook",
+        "utility",
+        "input-handling"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Uses React hooks with useEffect cleanup pattern to prevent memory leaks from pending timeouts."
+    },
+    {
+      "id": "function:src/hooks/useDebounce.ts:useDebounce",
+      "type": "function",
+      "name": "useDebounce",
+      "filePath": "src/hooks/useDebounce.ts",
+      "lineRange": [
+        3,
+        12
+      ],
+      "summary": "Debounces string input with 400ms default delay and toLowerCase() transformation.",
+      "tags": [
+        "hook",
+        "debounce"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useLanguages.ts",
+      "type": "file",
+      "name": "useLanguages.ts",
+      "filePath": "src/hooks/useLanguages.ts",
+      "summary": "Custom hook that fetches and caches the user's programming languages from GitHub using React Query with 10-minute stale time.",
+      "tags": [
+        "hook",
+        "data-fetching",
+        "github-integration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useLanguages.ts:useLanguages",
+      "type": "function",
+      "name": "useLanguages",
+      "filePath": "src/hooks/useLanguages.ts",
+      "lineRange": [
+        4,
+        12
+      ],
+      "summary": "Queries GitHub user languages with 10-minute cache duration and returns standardized response tuple.",
+      "tags": [
+        "hook",
+        "data-fetching"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/hooks/useRepositories.ts",
+      "type": "file",
+      "name": "useRepositories.ts",
+      "filePath": "src/hooks/useRepositories.ts",
+      "summary": "Custom hook managing infinite paginated repository search with debounced search input, language filtering, and automatic refetch every minute.",
+      "tags": [
+        "hook",
+        "data-fetching",
+        "pagination",
+        "infinite-scroll"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses React Query's useInfiniteQuery with complex generic type parameters for InfiniteData pagination state management."
+    },
+    {
+      "id": "function:src/hooks/useRepositories.ts:useRepositories",
+      "type": "function",
+      "name": "useRepositories",
+      "filePath": "src/hooks/useRepositories.ts",
+      "lineRange": [
+        8,
+        33
+      ],
+      "summary": "Manages infinite paginated repository queries with search debouncing, language filtering, and minute-interval refetching.",
+      "tags": [
+        "hook",
+        "data-fetching",
+        "pagination"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/hooks/useTheme.ts",
+      "type": "file",
+      "name": "useTheme.ts",
+      "filePath": "src/hooks/useTheme.ts",
+      "summary": "Custom hook providing access to theme context with error checking to ensure usage within ThemeProvider.",
+      "tags": [
+        "hook",
+        "theme",
+        "context"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/hooks/useTheme.ts:useTheme",
+      "type": "function",
+      "name": "useTheme",
+      "filePath": "src/hooks/useTheme.ts",
+      "lineRange": [
+        4,
+        10
+      ],
+      "summary": "Retrieves theme context with guard clause to prevent usage outside of ThemeProvider.",
+      "tags": [
+        "hook",
+        "context-consumer"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/auth0.ts",
+      "type": "file",
+      "name": "auth0.ts",
+      "filePath": "src/services/auth0.ts",
+      "summary": "Auth0 authentication service handling web-based login with GitHub token extraction from ID token claims and logout functionality.",
+      "tags": [
+        "service",
+        "authentication",
+        "auth0"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Decodes JWT ID token payload manually by splitting and base64-decoding to extract custom GitHub access token claim."
+    },
+    {
+      "id": "function:src/services/auth0.ts:loginWithAuth0",
+      "type": "function",
+      "name": "loginWithAuth0",
+      "filePath": "src/services/auth0.ts",
+      "lineRange": [
+        8,
+        25
+      ],
+      "summary": "Performs Auth0 web authentication and extracts GitHub access token from ID token custom claims.",
+      "tags": [
+        "authentication",
+        "auth0",
+        "token-extraction"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/auth0.ts:logoutFromAuth0",
+      "type": "function",
+      "name": "logoutFromAuth0",
+      "filePath": "src/services/auth0.ts",
+      "lineRange": [
+        27,
+        29
+      ],
+      "summary": "Clears Auth0 session and logs out the user.",
+      "tags": [
+        "authentication",
+        "auth0",
+        "logout"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/github/auth.ts",
+      "type": "file",
+      "name": "auth.ts",
+      "filePath": "src/services/github/auth.ts",
+      "summary": "GitHub API authentication service that validates bearer tokens by making authenticated requests to the GitHub user endpoint.",
+      "tags": [
+        "service",
+        "authentication",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/github/auth.ts:validateToken",
+      "type": "function",
+      "name": "validateToken",
+      "filePath": "src/services/github/auth.ts",
+      "lineRange": [
+        4,
+        8
+      ],
+      "summary": "Validates GitHub bearer token by making authenticated GET request to /user endpoint.",
+      "tags": [
+        "authentication",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/github/client.ts",
+      "type": "file",
+      "name": "client.ts",
+      "filePath": "src/services/github/client.ts",
+      "summary": "GitHub API client factory that creates an axios instance with GitHub API base URL and provides token management for authorization.",
+      "tags": [
+        "service",
+        "http-client",
+        "github-integration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/services/github/client.ts:setAuthToken",
+      "type": "function",
+      "name": "setAuthToken",
+      "filePath": "src/services/github/client.ts",
+      "lineRange": [
+        9,
+        15
+      ],
+      "summary": "Manages GitHub API client authorization header by setting or removing Bearer token.",
+      "tags": [
+        "service",
+        "authentication"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/services/github/languages.ts",
+      "type": "file",
+      "name": "languages.ts",
+      "filePath": "src/services/github/languages.ts",
+      "summary": "GitHub service that aggregates programming languages from user repositories, normalizes counts, and prioritizes TypeScript.",
+      "tags": [
+        "service",
+        "data-aggregation",
+        "github-integration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/github/languages.ts:fetchUserLanguages",
+      "type": "function",
+      "name": "fetchUserLanguages",
+      "filePath": "src/services/github/languages.ts",
+      "lineRange": [
+        3,
+        27
+      ],
+      "summary": "Fetches user repositories, aggregates language counts, sorts by frequency, and promotes TypeScript to top.",
+      "tags": [
+        "service",
+        "data-aggregation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/services/github/repositories.ts",
+      "type": "file",
+      "name": "repositories.ts",
+      "filePath": "src/services/github/repositories.ts",
+      "summary": "GitHub search service for paginated repository queries with keyword and language filtering, sorted by star count.",
+      "tags": [
+        "service",
+        "data-fetching",
+        "search",
+        "github-integration"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/services/github/repositories.ts:fetchRepositories",
+      "type": "function",
+      "name": "fetchRepositories",
+      "filePath": "src/services/github/repositories.ts",
+      "lineRange": [
+        9,
+        34
+      ],
+      "summary": "Fetches paginated GitHub repositories matching search and language filters, sorted by stars descending.",
+      "tags": [
+        "service",
+        "data-fetching"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/navigation/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/navigation/index.tsx",
+      "summary": "Main navigation stack coordinator that conditionally renders authentication or app screens based on user login state, managing theme switching and logout functionality.",
+      "tags": [
+        "entry-point",
+        "navigation",
+        "auth-flow"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses React Navigation stack navigator with conditional rendering for authenticated vs. unauthenticated states."
+    },
+    {
+      "id": "file:src/screens/LoginScreen/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/screens/LoginScreen/index.tsx",
+      "summary": "Authentication screen supporting both Auth0 OAuth and personal access token login with token validation, error handling, and UI feedback.",
+      "tags": [
+        "auth-handler",
+        "component",
+        "screen"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/screens/LoginScreen/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/screens/LoginScreen/styles.ts",
+      "summary": "Stylesheet definitions for LoginScreen layout, buttons, inputs, divider, and error messaging with responsive spacing and typography.",
+      "tags": [
+        "style-definition",
+        "ui-theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/screens/RepoListScreen/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/screens/RepoListScreen/index.tsx",
+      "summary": "Main repository list screen with infinite scroll pagination, search filtering by language, pull-to-refresh, back-to-top FAB, and network error handling.",
+      "tags": [
+        "screen",
+        "list-view",
+        "pagination"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses FlashList for efficient virtualization, Animated for FAB opacity transitions, and pull-to-refresh with refetch logic."
+    },
+    {
+      "id": "file:src/screens/RepoListScreen/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/screens/RepoListScreen/styles.ts",
+      "summary": "Stylesheet for RepoListScreen including FAB positioning, search input, error states, language chips layout, and list container styling.",
+      "tags": [
+        "style-definition",
+        "layout",
+        "ui-theme"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/screens/RepoDetailsScreen/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/screens/RepoDetailsScreen/index.tsx",
+      "summary": "Repository details display screen showing repo name, stars, owner info, description, language, with button to open repo on GitHub.",
+      "tags": [
+        "screen",
+        "detail-view",
+        "data-display"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/screens/RepoDetailsScreen/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/screens/RepoDetailsScreen/styles.ts",
+      "summary": "Stylesheet for RepoDetailsScreen containing header layout, star display, owner info, description, and action button styling.",
+      "tags": [
+        "style-definition",
+        "ui-theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Banner/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/components/Banner/index.tsx",
+      "summary": "Reusable Banner component displaying a message in an absolutely positioned container, used for network error notifications.",
+      "tags": [
+        "component",
+        "notification",
+        "ui"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Banner/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/components/Banner/styles.ts",
+      "summary": "Stylesheet for Banner component with absolute positioning, red background, and centered white text for error messaging.",
+      "tags": [
+        "style-definition",
+        "ui-theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/screens/LoginScreen/index.tsx:LoginScreen",
+      "type": "function",
+      "name": "LoginScreen",
+      "filePath": "src/screens/LoginScreen/index.tsx",
+      "lineRange": [
+        8,
+        110
+      ],
+      "summary": "React component managing authentication UI with state for token input, loading states, error messages, and two login methods (Auth0 and PAT).",
+      "tags": [
+        "component",
+        "auth-handler",
+        "form-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/screens/RepoListScreen/index.tsx:RepoListScreen",
+      "type": "function",
+      "name": "RepoListScreen",
+      "filePath": "src/screens/RepoListScreen/index.tsx",
+      "lineRange": [
+        34,
+        237
+      ],
+      "summary": "Primary screen component managing repository listing with infinite scroll, language filtering, search, pull-to-refresh, and animated FAB.",
+      "tags": [
+        "screen",
+        "data-fetching",
+        "ui-orchestration"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:src/screens/RepoDetailsScreen/index.tsx:RepoDetailsScreen",
+      "type": "function",
+      "name": "RepoDetailsScreen",
+      "filePath": "src/screens/RepoDetailsScreen/index.tsx",
+      "lineRange": [
+        14,
+        56
+      ],
+      "summary": "Screen component displaying detailed information about a selected repository including metadata and GitHub link.",
+      "tags": [
+        "screen",
+        "data-display"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Banner/index.tsx:Banner",
+      "type": "function",
+      "name": "Banner",
+      "filePath": "src/components/Banner/index.tsx",
+      "lineRange": [
+        4,
+        10
+      ],
+      "summary": "Presentational component rendering a message in a styled banner container for notifications.",
+      "tags": [
+        "component",
+        "notification"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/navigation/index.tsx:Navigation",
+      "type": "function",
+      "name": "Navigation",
+      "filePath": "src/navigation/index.tsx",
+      "lineRange": [
+        14,
+        72
+      ],
+      "summary": "Navigation component that sets up the stack navigator with conditional routing based on authentication state and theme-aware headers.",
+      "tags": [
+        "navigation",
+        "entry-point",
+        "auth-flow"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/Chip/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/components/Chip/index.tsx",
+      "summary": "React Native component for a themable, selectable chip button with dynamic styling based on selection state and current theme.",
+      "tags": [
+        "component",
+        "ui",
+        "themable",
+        "interactive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/Chip/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/components/Chip/styles.ts",
+      "summary": "StyleSheet definitions for the Chip component including padding, border radius, and selected state typography.",
+      "tags": [
+        "styles",
+        "stylesheet",
+        "ui-styling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/Chip/index.tsx:Chip",
+      "type": "function",
+      "name": "Chip",
+      "filePath": "src/components/Chip/index.tsx",
+      "lineRange": [
+        11,
+        34
+      ],
+      "summary": "Renders a themable chip component that displays a label and responds to press events with dynamic border and background colors based on selection state.",
+      "tags": [
+        "component",
+        "react-native",
+        "interactive"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/RepoCard/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/components/RepoCard/index.tsx",
+      "summary": "React Native component displaying repository information including name, description, star count, language, and owner avatar with themable styling.",
+      "tags": [
+        "component",
+        "ui",
+        "repository-display",
+        "card"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/RepoCard/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/components/RepoCard/styles.ts",
+      "summary": "Comprehensive stylesheet for RepoCard component covering card layout, typography, shadows, and footer section with flexible row styling for metadata display.",
+      "tags": [
+        "styles",
+        "stylesheet",
+        "ui-styling",
+        "layout"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:src/components/RepoCard/index.tsx:RepoCard",
+      "type": "function",
+      "name": "RepoCard",
+      "filePath": "src/components/RepoCard/index.tsx",
+      "lineRange": [
+        11,
+        56
+      ],
+      "summary": "Displays a repository card with structured layout showing repo name, description, star count, owner avatar and login, and programming language with theme-aware colors.",
+      "tags": [
+        "component",
+        "react-native",
+        "data-display"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:src/components/RepoCardSkeleton/index.tsx",
+      "type": "file",
+      "name": "index.tsx",
+      "filePath": "src/components/RepoCardSkeleton/index.tsx",
+      "summary": "React Native skeleton loader component that mimics RepoCard layout using placeholder Views for loading states before repository data is fetched.",
+      "tags": [
+        "component",
+        "skeleton",
+        "loading-state",
+        "ux"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:src/components/RepoCardSkeleton/styles.ts",
+      "type": "file",
+      "name": "styles.ts",
+      "filePath": "src/components/RepoCardSkeleton/styles.ts",
+      "summary": "StyleSheet definitions for RepoCardSkeleton component with placeholder dimensions and border radius for shimmer-like placeholder blocks.",
+      "tags": [
+        "styles",
+        "stylesheet",
+        "skeleton-styling"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:src/components/RepoCardSkeleton/index.tsx:RepoCardSkeleton",
+      "type": "function",
+      "name": "RepoCardSkeleton",
+      "filePath": "src/components/RepoCardSkeleton/index.tsx",
+      "lineRange": [
+        6,
+        33
+      ],
+      "summary": "Renders a skeleton loading state that matches RepoCard structure with animated placeholder blocks for name, description, stars, owner, and language fields.",
+      "tags": [
+        "component",
+        "react-native",
+        "loading"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "config:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "React Native Expo project configuration defining scripts for iOS, Android, and web platforms, with core dependencies for navigation, data fetching, authentication, and gesture handling.",
+      "tags": [
+        "configuration",
+        "build-system",
+        "package-management",
+        "expo",
+        "react-native"
+      ],
+      "complexity": "simple",
+      "languageNotes": "Uses Expo for cross-platform development with managed dependencies for React Native, React Query, and navigation stack."
+    },
+    {
+      "id": "config:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration extending Expo's base config with strict mode enabled and path alias mapping for src directory imports.",
+      "tags": [
+        "configuration",
+        "typescript",
+        "build-system",
+        "development"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Comprehensive project overview documenting a React Native GitHub repositories explorer app, including features, tech stack, architecture, setup instructions, and design decisions.",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "overview",
+        "guide",
+        "architecture"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "Developer workflow documentation for RTK (Rust Token Killer) providing token-optimized command wrappers across build, test, git, GitHub, package management, file operations, and infrastructure tools.",
+      "tags": [
+        "documentation",
+        "development",
+        "build-system",
+        "ci-cd",
+        "optimization"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:package.json",
+      "type": "config",
+      "name": "package.json",
+      "filePath": "package.json",
+      "summary": "NPM dependencies and scripts for the Expo React Native project",
+      "tags": [
+        "config",
+        "dependencies"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:tsconfig.json",
+      "type": "config",
+      "name": "tsconfig.json",
+      "filePath": "tsconfig.json",
+      "summary": "TypeScript compiler configuration with strict mode enabled",
+      "tags": [
+        "config",
+        "typescript"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Project documentation describing the app's features, architecture, and setup instructions",
+      "tags": [
+        "documentation",
+        "guide"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:CLAUDE.md",
+      "type": "document",
+      "name": "CLAUDE.md",
+      "filePath": "CLAUDE.md",
+      "summary": "RTK token optimization guide for development workflows",
+      "tags": [
+        "documentation",
+        "guide"
+      ],
+      "complexity": "simple"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:src/types/navigation.ts",
+      "target": "file:src/types/repository.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/themes/dark.ts",
+      "target": "file:src/types/theme.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/themes/light.ts",
+      "target": "file:src/types/theme.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/themes/index.ts",
+      "target": "file:src/themes/light.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/themes/index.ts",
+      "target": "file:src/themes/dark.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/AuthProvider.tsx",
+      "target": "file:src/contexts/AuthContext.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/ThemeContext.tsx",
+      "target": "file:src/types/theme.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/ThemeContext.tsx",
+      "target": "file:src/themes/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/ThemeProvider.tsx",
+      "target": "file:src/types/theme.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/ThemeProvider.tsx",
+      "target": "file:src/themes/index.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/contexts/ThemeProvider.tsx",
+      "target": "file:src/contexts/ThemeContext.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/themes/index.ts",
+      "target": "file:src/themes/light.ts",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/themes/index.ts",
+      "target": "file:src/themes/dark.ts",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:index.ts",
+      "target": "file:App.tsx",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/github/auth.ts",
+      "target": "file:src/services/github/client.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/github/languages.ts",
+      "target": "file:src/services/github/client.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/services/github/repositories.ts",
+      "target": "file:src/services/github/client.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/hooks/useDebounce.ts",
+      "target": "function:src/hooks/useDebounce.ts:useDebounce",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useDebounce.ts",
+      "target": "function:src/hooks/useDebounce.ts:useDebounce",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/useAuth.ts",
+      "target": "function:src/hooks/useAuth.ts:useAuth",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useAuth.ts",
+      "target": "function:src/hooks/useAuth.ts:useAuth",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/useTheme.ts",
+      "target": "function:src/hooks/useTheme.ts:useTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useTheme.ts",
+      "target": "function:src/hooks/useTheme.ts:useTheme",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/useLanguages.ts",
+      "target": "function:src/hooks/useLanguages.ts:useLanguages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useLanguages.ts",
+      "target": "function:src/hooks/useLanguages.ts:useLanguages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/useRepositories.ts",
+      "target": "function:src/hooks/useRepositories.ts:useRepositories",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/hooks/useRepositories.ts",
+      "target": "function:src/hooks/useRepositories.ts:useRepositories",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/auth0.ts",
+      "target": "function:src/services/auth0.ts:loginWithAuth0",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth0.ts",
+      "target": "function:src/services/auth0.ts:loginWithAuth0",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/auth0.ts",
+      "target": "function:src/services/auth0.ts:logoutFromAuth0",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/auth0.ts",
+      "target": "function:src/services/auth0.ts:logoutFromAuth0",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/github/auth.ts",
+      "target": "function:src/services/github/auth.ts:validateToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/github/auth.ts",
+      "target": "function:src/services/github/auth.ts:validateToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/github/client.ts",
+      "target": "function:src/services/github/client.ts:setAuthToken",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/github/client.ts",
+      "target": "function:src/services/github/client.ts:setAuthToken",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/github/languages.ts",
+      "target": "function:src/services/github/languages.ts:fetchUserLanguages",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/github/languages.ts",
+      "target": "function:src/services/github/languages.ts:fetchUserLanguages",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/services/github/repositories.ts",
+      "target": "function:src/services/github/repositories.ts:fetchRepositories",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/services/github/repositories.ts",
+      "target": "function:src/services/github/repositories.ts:fetchRepositories",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/hooks/useRepositories.ts",
+      "target": "file:src/hooks/useDebounce.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/hooks/useLanguages.ts",
+      "target": "file:src/services/github/languages.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/hooks/useRepositories.ts",
+      "target": "file:src/services/github/repositories.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:app.config.js",
+      "target": "file:App.tsx",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/screens/LoginScreen/index.tsx",
+      "target": "file:src/screens/LoginScreen/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/screens/RepoListScreen/index.tsx",
+      "target": "file:src/screens/RepoListScreen/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/screens/RepoDetailsScreen/index.tsx",
+      "target": "file:src/screens/RepoDetailsScreen/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Banner/index.tsx",
+      "target": "file:src/components/Banner/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/screens/LoginScreen/index.tsx",
+      "target": "function:src/screens/LoginScreen/index.tsx:LoginScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/screens/RepoListScreen/index.tsx",
+      "target": "function:src/screens/RepoListScreen/index.tsx:RepoListScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/screens/RepoDetailsScreen/index.tsx",
+      "target": "function:src/screens/RepoDetailsScreen/index.tsx:RepoDetailsScreen",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Banner/index.tsx",
+      "target": "function:src/components/Banner/index.tsx:Banner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/navigation/index.tsx",
+      "target": "function:src/navigation/index.tsx:Navigation",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/screens/LoginScreen/index.tsx",
+      "target": "function:src/screens/LoginScreen/index.tsx:LoginScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/screens/RepoListScreen/index.tsx",
+      "target": "function:src/screens/RepoListScreen/index.tsx:RepoListScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/screens/RepoDetailsScreen/index.tsx",
+      "target": "function:src/screens/RepoDetailsScreen/index.tsx:RepoDetailsScreen",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/Banner/index.tsx",
+      "target": "function:src/components/Banner/index.tsx:Banner",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/navigation/index.tsx",
+      "target": "function:src/navigation/index.tsx:Navigation",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/navigation/index.tsx",
+      "target": "file:src/screens/LoginScreen/index.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/navigation/index.tsx",
+      "target": "file:src/screens/RepoListScreen/index.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/navigation/index.tsx",
+      "target": "file:src/screens/RepoDetailsScreen/index.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/screens/RepoListScreen/index.tsx",
+      "target": "file:src/components/Banner/index.tsx",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:src/screens/RepoListScreen/index.tsx:RepoListScreen",
+      "target": "function:src/components/Banner/index.tsx:Banner",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/Chip/index.tsx",
+      "target": "file:src/components/Chip/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/Chip/index.tsx",
+      "target": "function:src/components/Chip/index.tsx:Chip",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/Chip/index.tsx",
+      "target": "function:src/components/Chip/index.tsx:Chip",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/RepoCard/index.tsx",
+      "target": "file:src/components/RepoCard/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/RepoCard/index.tsx",
+      "target": "function:src/components/RepoCard/index.tsx:RepoCard",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/RepoCard/index.tsx",
+      "target": "function:src/components/RepoCard/index.tsx:RepoCard",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/RepoCardSkeleton/index.tsx",
+      "target": "file:src/components/RepoCardSkeleton/styles.ts",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:src/components/RepoCardSkeleton/index.tsx",
+      "target": "function:src/components/RepoCardSkeleton/index.tsx:RepoCardSkeleton",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:src/components/RepoCardSkeleton/index.tsx",
+      "target": "function:src/components/RepoCardSkeleton/index.tsx:RepoCardSkeleton",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:src/components/RepoCardSkeleton/styles.ts",
+      "target": "file:src/components/RepoCard/styles.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:src/components/RepoCardSkeleton/index.tsx",
+      "target": "file:src/components/RepoCard/styles.ts",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:tsconfig.json",
+      "target": "config:package.json",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:package.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "config:tsconfig.json",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:CLAUDE.md",
+      "target": "config:package.json",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:entry",
+      "name": "Entry Point",
+      "description": "Application bootstrap, Expo configuration, and root component setup that initializes providers and navigation",
+      "nodeIds": [
+        "file:index.ts",
+        "file:App.tsx",
+        "file:app.config.js"
+      ]
+    },
+    {
+      "id": "layer:navigation",
+      "name": "Navigation",
+      "description": "Screen navigation stack configuration using React Navigation with type-safe navigation parameters",
+      "nodeIds": [
+        "file:src/navigation/index.tsx"
+      ]
+    },
+    {
+      "id": "layer:screens",
+      "name": "Screens",
+      "description": "Feature screens (Login, RepoList, RepoDetails) with associated styling for the main user interface",
+      "nodeIds": [
+        "file:src/screens/LoginScreen/index.tsx",
+        "file:src/screens/LoginScreen/styles.ts",
+        "file:src/screens/RepoListScreen/index.tsx",
+        "file:src/screens/RepoListScreen/styles.ts",
+        "file:src/screens/RepoDetailsScreen/index.tsx",
+        "file:src/screens/RepoDetailsScreen/styles.ts"
+      ]
+    },
+    {
+      "id": "layer:components",
+      "name": "Reusable Components",
+      "description": "Reusable UI components (Banner, Chip, RepoCard, RepoCardSkeleton) with styling that support feature screens",
+      "nodeIds": [
+        "file:src/components/Banner/index.tsx",
+        "file:src/components/Banner/styles.ts",
+        "file:src/components/Chip/index.tsx",
+        "file:src/components/Chip/styles.ts",
+        "file:src/components/RepoCard/index.tsx",
+        "file:src/components/RepoCard/styles.ts",
+        "file:src/components/RepoCardSkeleton/index.tsx",
+        "file:src/components/RepoCardSkeleton/styles.ts"
+      ]
+    },
+    {
+      "id": "layer:state-management",
+      "name": "State Management",
+      "description": "React Context providers (Auth, Theme) and custom hooks (useAuth, useTheme, useDebounce) for state and behavior management",
+      "nodeIds": [
+        "file:src/contexts/AuthContext.ts",
+        "file:src/contexts/AuthProvider.tsx",
+        "file:src/contexts/ThemeContext.tsx",
+        "file:src/contexts/ThemeProvider.tsx",
+        "file:src/hooks/useAuth.ts",
+        "file:src/hooks/useTheme.ts",
+        "file:src/hooks/useDebounce.ts"
+      ]
+    },
+    {
+      "id": "layer:data-fetching",
+      "name": "Data Fetching",
+      "description": "Data fetching hooks (useRepositories, useLanguages) and GitHub API service layer using TanStack Query for caching and synchronization",
+      "nodeIds": [
+        "file:src/hooks/useRepositories.ts",
+        "file:src/hooks/useLanguages.ts",
+        "file:src/services/auth0.ts",
+        "file:src/services/github/auth.ts",
+        "file:src/services/github/client.ts",
+        "file:src/services/github/languages.ts",
+        "file:src/services/github/repositories.ts"
+      ]
+    },
+    {
+      "id": "layer:theme-system",
+      "name": "Theme System",
+      "description": "Theme configuration and type definitions (light, dark themes) supporting visual styling across the application",
+      "nodeIds": [
+        "file:src/themes/dark.ts",
+        "file:src/themes/index.ts",
+        "file:src/themes/light.ts",
+        "file:src/types/theme.ts"
+      ]
+    },
+    {
+      "id": "layer:types",
+      "name": "Type Definitions",
+      "description": "Shared TypeScript type definitions for navigation, repository data models, and type-safe inter-module communication",
+      "nodeIds": [
+        "file:src/types/navigation.ts",
+        "file:src/types/repository.ts"
+      ]
+    },
+    {
+      "id": "layer:project-config",
+      "name": "Project Configuration",
+      "description": "Project configuration files (package.json, tsconfig.json) and documentation (README, development guides)",
+      "nodeIds": [
+        "file:package.json",
+        "file:tsconfig.json",
+        "file:README.md",
+        "file:CLAUDE.md"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "Start with the README to understand the project's purpose, core features, and architecture. The app is a React Native GitHub repository browser with search, filtering, and offline support. This document provides the context needed before diving into code.",
+      "nodeIds": [
+        "file:README.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Expo Entry Point",
+      "description": "The index.ts file bootstraps the Expo application by importing and rendering the main App component. This is where the React Native runtime begins, establishing the starting point for the entire application structure.",
+      "nodeIds": [
+        "file:index.ts"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Provider Setup & Type Definitions",
+      "description": "App.tsx wraps the navigation with authentication and theme providers, establishing global state management. The type definitions in navigation.ts define the screen stack structure, forming the backbone of how users move through the application.",
+      "nodeIds": [
+        "file:App.tsx",
+        "file:src/types/navigation.ts"
+      ],
+      "languageLesson": "React Context providers wrap children components to inject global state (auth, theme) without prop drilling. TypeScript's discriminated unions in navigation types ensure type-safe screen routing."
+    },
+    {
+      "order": 4,
+      "title": "Navigation Stack",
+      "description": "The navigation/index.tsx configures the React Navigation stack, defining routes to LoginScreen, RepoListScreen, and RepoDetailsScreen. This orchestrates the screen flow and manages the user's navigation experience.",
+      "nodeIds": [
+        "file:src/navigation/index.tsx"
+      ]
+    },
+    {
+      "order": 5,
+      "title": "State Management: Auth & Theme",
+      "description": "AuthProvider and ThemeProvider are context providers that manage authentication state (login/logout) and theme state (light/dark mode). Together with their context definitions (AuthContext, ThemeContext), they implement a clean state-management pattern using React Context.",
+      "nodeIds": [
+        "file:src/contexts/AuthProvider.tsx",
+        "file:src/contexts/AuthContext.ts",
+        "file:src/contexts/ThemeProvider.tsx",
+        "file:src/contexts/ThemeContext.tsx"
+      ]
+    },
+    {
+      "order": 6,
+      "title": "Theme Configuration",
+      "description": "The dark.ts and light.ts files define the complete theme objects (colors, spacing, typography) for each mode. These are consumed by ThemeProvider and referenced by all UI components via the useTheme hook, ensuring visual consistency across the app.",
+      "nodeIds": [
+        "file:src/themes/dark.ts",
+        "file:src/themes/light.ts"
+      ],
+      "languageLesson": "Externalizing theme as data objects rather than CSS or inline styles allows runtime switching. TypeScript interfaces in theme.ts define the exact structure every theme must follow."
+    },
+    {
+      "order": 7,
+      "title": "Custom Hooks: Auth & Theme",
+      "description": "useAuth and useTheme are convenience hooks that extract context values safely. These hooks encapsulate context access, reducing boilerplate in components and making it easy to add logic later (e.g., error handling).",
+      "nodeIds": [
+        "file:src/hooks/useAuth.ts",
+        "file:src/hooks/useTheme.ts"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Login Screen",
+      "description": "The LoginScreen uses the useAuth hook to handle authentication via Auth0, and useTheme to apply styling. It's the first screen users see, establishing the pattern of how screens consume context and hooks.",
+      "nodeIds": [
+        "file:src/screens/LoginScreen/index.tsx"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Data Fetching: Repository Hook",
+      "description": "useRepositories is the core data-fetching hook that powers the repository list. It integrates TanStack Query for caching and handles pagination, search, and debouncing. This is where business logic meets API integration.",
+      "nodeIds": [
+        "file:src/hooks/useRepositories.ts",
+        "file:src/hooks/useDebounce.ts"
+      ],
+      "languageLesson": "TanStack Query caches responses and manages background refetching, while debouncing prevents excessive API calls during user typing. Together they optimize for both performance and API quota efficiency."
+    },
+    {
+      "order": 10,
+      "title": "GitHub API Client & Services",
+      "description": "The client.ts configures the HTTP client with auth headers, while repositories.ts implements the GitHub API endpoints for searching and fetching repositories. This layer isolates API logic from React components, making it testable and reusable.",
+      "nodeIds": [
+        "file:src/services/github/client.ts",
+        "file:src/services/github/repositories.ts"
+      ]
+    },
+    {
+      "order": 11,
+      "title": "Repository Type System",
+      "description": "repository.ts defines the TypeScript interfaces for Repository, Search Results, and API responses. These types ensure type safety across data fetching, components, and business logic, reducing bugs and improving developer experience.",
+      "nodeIds": [
+        "file:src/types/repository.ts"
+      ]
+    },
+    {
+      "order": 12,
+      "title": "UI Components & Screens",
+      "description": "RepoCard displays individual repositories with language tags, Banner shows notifications, RepoCardSkeleton provides loading feedback, and Chip renders tag elements. RepoListScreen brings them all together with infinite scroll pagination. RepoDetailsScreen shows detailed information for a selected repository. These components rely on useTheme for styling and types for data consistency.",
+      "nodeIds": [
+        "file:src/components/RepoCard/index.tsx",
+        "file:src/components/Banner/index.tsx",
+        "file:src/components/Chip/index.tsx",
+        "file:src/components/RepoCardSkeleton/index.tsx",
+        "file:src/screens/RepoListScreen/index.tsx",
+        "file:src/screens/RepoDetailsScreen/index.tsx"
+      ]
+    },
+    {
+      "order": 13,
+      "title": "Language Filtering",
+      "description": "useLanguages provides the list of available programming languages for filtering repositories. This hook integrates with RepoListScreen to let users narrow results by language, demonstrating how data hooks enhance feature functionality.",
+      "nodeIds": [
+        "file:src/hooks/useLanguages.ts"
+      ]
+    },
+    {
+      "order": 14,
+      "title": "Auth0 Integration",
+      "description": "auth0.ts handles authentication logic, integrating with the Auth0 platform. It's used by AuthProvider to manage user sessions, enabling secure access to the GitHub API on behalf of authenticated users.",
+      "nodeIds": [
+        "file:src/services/auth0.ts"
+      ]
+    },
+    {
+      "order": 15,
+      "title": "Build & Expo Configuration",
+      "description": "app.config.js is the Expo configuration file that defines app metadata, permissions, and build settings. This file controls how the app is built, what features are available (camera, storage, etc.), and what platforms it targets.",
+      "nodeIds": [
+        "file:app.config.js"
+      ],
+      "languageLesson": "Expo configuration is JavaScript-based, allowing conditional logic for different environments (dev vs. production). Permissions must be declared upfront for app store submission and runtime requests."
+    }
+  ]
+}
