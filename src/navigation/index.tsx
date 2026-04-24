@@ -14,7 +14,7 @@ const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Navigation() {
   const { theme, resolvedMode, setMode } = useTheme()
-  const { token, logout } = useAuth()
+  const { state, actions } = useAuth()
 
   const sharedOptions = {
     headerStyle: {
@@ -33,9 +33,11 @@ export default function Navigation() {
     )
   }
 
+  const isAuthenticated = state.session.kind === "authenticated"
+
   return (
     <Stack.Navigator>
-      {token == null ? (
+      {!isAuthenticated ? (
         <Stack.Screen
           name="Login"
           component={LoginScreen}
@@ -50,7 +52,7 @@ export default function Navigation() {
               ...sharedOptions,
               title: "Repositories",
               headerLeft: () => (
-                <TouchableOpacity onPress={logout} style={{ alignItems: "center", justifyContent: "center", height: 40, paddingHorizontal: 8 }}>
+                <TouchableOpacity onPress={actions.logout} style={{ alignItems: "center", justifyContent: "center", height: 40, paddingHorizontal: 8 }}>
                   <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textSecondary }}>Sign out</Text>
                 </TouchableOpacity>
               ),

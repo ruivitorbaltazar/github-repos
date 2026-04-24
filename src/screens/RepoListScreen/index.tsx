@@ -1,17 +1,8 @@
-import { useEffect, useRef, useState } from "react"
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-} from "react-native"
-import { useNavigation } from "@react-navigation/native"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import { useEffect, useRef } from "react"
+import { View, Text, TextInput, FlatList, TouchableOpacity } from "react-native"
 
-import { useRepositories } from "@/hooks/useRepositories"
-import { useLanguages } from "@/hooks/useLanguages"
 import { useTheme } from "@/hooks/useTheme"
+import { useRepoList } from "./useRepoList"
 
 import { RepoCard } from "@/components/RepoCard"
 import { RepoCardSkeleton } from "@/components/RepoCardSkeleton"
@@ -19,53 +10,22 @@ import { Banner } from "@/components/Banner"
 import { Chip } from "@/components/Chip"
 
 import { Repository } from "@/types/repository"
-import { RootStackParamList } from "@/types/navigation"
 
 import { styles } from "./styles"
 
-type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "RepoList"
->
-
 const RepoListScreen = () => {
   const { theme } = useTheme()
-
-  const [search, setSearch] = useState("")
-  const [language, setLanguage] = useState("typescript")
-
-  const [shouldShowNetworkBanner, setShouldShowNetworkBanner] = useState(false)
-
-  const { languages, languagesLoading } = useLanguages()
-
-  const {
-    reposData,
-    reposAreFetching,
-    reposFetchingNextPage,
-    reposError,
-    fetchNextPage,
-    hasNextPage,
-  } = useRepositories({ search, language })
-
-  const navigation = useNavigation<NavigationProp>()
+  const { state, actions } = useRepoList()
+  const { async: asyncStatus, search, language, languages } = state
 
   const chipsRef = useRef<FlatList<string> | null>(null)
 
   useEffect(() => {
-    if (!languages.length) return
-    const index = languages.findIndex((l) => l.toLowerCase() === language)
+    if (languages.status !== "ready" || !languages.items.length) return
+    const index = languages.items.findIndex((l) => l.toLowerCase() === language)
     if (index < 0) return
     chipsRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 })
   }, [language, languages])
-
-  useEffect(() => {
-    if (reposError && reposError.message === "Network Error") {
-      console.log('network error!');
-      setShouldShowNetworkBanner(true)
-    } else {
-      setShouldShowNetworkBanner(false)
-    }
-  }, [reposError])
 
   const renderLoading = () => (
     <>
@@ -73,18 +33,15 @@ const RepoListScreen = () => {
     </>
   )
 
-  const renderError = () => (
+  const renderError = (message: string) => (
     <View style={styles.error}>
-      <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
-        Oops!
-      </Text>
+      <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>Oops!</Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
         Something went wrong while fetching repositories.
       </Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
-        "{reposError?.message || "Unknown error"}"
+        "{message}"
       </Text>
-      {/* TODO: Implement retry logic */}
       <TouchableOpacity style={styles.errorAction} onPress={() => console.log("Trying again")}>
         <Text style={[styles.errorActionText, { color: theme.textTertiary }]}>Try again</Text>
       </TouchableOpacity>
@@ -102,26 +59,16 @@ const RepoListScreen = () => {
     </View>
   )
 
-  const renderCard = ({ item }: { item: Repository }) => {
-    const {
-      name,
-      description,
-      language,
-      stargazers_count,
-      owner,
-    } = item
-
-    return (
-      <RepoCard
-        name={name}
-        description={description}
-        language={language}
-        stars={stargazers_count}
-        owner={{ login: owner.login, avatar_url: owner.avatar_url }}
-        onPress={() => navigation.navigate("RepoDetails", { repo: item })}
-      />
-    )
-  }
+  const renderCard = ({ item }: { item: Repository }) => (
+    <RepoCard
+      name={item.name}
+      description={item.description}
+      language={item.language}
+      stars={item.stargazers_count}
+      owner={{ login: item.owner.login, avatar_url: item.owner.avatar_url }}
+      onPress={() => actions.openRepo(item)}
+    />
+  )
 
   const renderChip = ({ item: lang }: { item: string }) => {
     const isSelected = language === lang.toLowerCase()
@@ -129,17 +76,19 @@ const RepoListScreen = () => {
       <Chip
         label={lang}
         isSelected={isSelected}
-        onPress={() => setLanguage(isSelected ? "typescript" : lang.toLowerCase())}
+        onPress={() => actions.setLanguage(isSelected ? "typescript" : lang.toLowerCase())}
       />
     )
   }
 
   const renderListContent = () => {
-    if (reposAreFetching) return renderLoading()
-    if (reposError && reposError.message !== "Network Error") return renderError()
-    if (!reposData || reposData.length === 0) return renderEmpty()
+    if (asyncStatus.kind === "loading") return renderLoading()
+    if (asyncStatus.kind === "error" && !asyncStatus.isNetworkError) return renderError(asyncStatus.message)
+    if (asyncStatus.kind === "empty") return renderEmpty()
     return null
   }
+
+  const showNetworkBanner = asyncStatus.kind === "error" && asyncStatus.isNetworkError
 
   const renderListHeader = () => (
     <View style={styles.listHeader}>
@@ -148,21 +97,21 @@ const RepoListScreen = () => {
         <TextInput
           placeholder="Search repositories..."
           value={search}
-          onChangeText={setSearch}
+          onChangeText={actions.setSearch}
           style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
         />
         {search ? (
-          <TouchableOpacity onPress={() => setSearch("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
+          <TouchableOpacity onPress={() => actions.setSearch("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
             <Text style={[styles.clearButtonText, { color: theme.textTertiary }]}>╳</Text>
           </TouchableOpacity>
         ) : null}
       </View>
 
-      {!languagesLoading && languages.length > 0 && (
+      {languages.status === "ready" && languages.items.length > 0 && (
         <FlatList
           ref={chipsRef}
           horizontal
-          data={languages}
+          data={languages.items}
           keyExtractor={(item) => item}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsRow}
@@ -177,9 +126,12 @@ const RepoListScreen = () => {
     </View>
   )
 
+  const listData = asyncStatus.kind === "success" ? asyncStatus.repos : []
+  const isFetchingMore = asyncStatus.kind === "success" && asyncStatus.isFetchingMore
+
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
-      {shouldShowNetworkBanner ? (
+      {showNetworkBanner ? (
         <Banner message="Network error, please check your connection" />
       ) : null}
 
@@ -187,13 +139,13 @@ const RepoListScreen = () => {
 
       <FlatList
         style={styles.repoList}
-        data={reposAreFetching || reposError || !reposData?.length ? [] : reposData}
+        data={listData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCard}
         ListEmptyComponent={renderListContent}
-        onEndReached={() => { if (hasNextPage && !reposFetchingNextPage) fetchNextPage() }}
+        onEndReached={actions.loadMore}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={reposFetchingNextPage ? <RepoCardSkeleton /> : null}
+        ListFooterComponent={isFetchingMore ? <RepoCardSkeleton /> : null}
       />
     </View>
   )
