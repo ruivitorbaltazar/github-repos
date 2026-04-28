@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const BASE_URL = "https://api.github.com"
+export const BASE_URL = process.env.EXPO_PUBLIC_GITHUB_API_BASE_URL!
 
 export const githubClient = axios.create({
   baseURL: BASE_URL,
