@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native"
+import { useTranslation } from "react-i18next"
 import { useNavigation } from "@react-navigation/native"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
@@ -29,6 +30,7 @@ type NavigationProp = NativeStackNavigationProp<
 >
 
 const RepoListScreen = () => {
+  const { t } = useTranslation()
   const { theme } = useTheme()
 
   const [search, setSearch] = useState("")
@@ -76,17 +78,17 @@ const RepoListScreen = () => {
   const renderError = () => (
     <View style={styles.error}>
       <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
-        Oops!
+        {t("repoList.errorHeading")}
       </Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
-        Something went wrong while fetching repositories.
+        {t("repoList.errorBody")}
       </Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
-        "{reposError?.message || "Unknown error"}"
+        "{reposError?.message || t("repoList.unknownError")}"
       </Text>
       {/* TODO: Implement retry logic */}
       <TouchableOpacity style={styles.errorAction} onPress={() => console.log("Trying again")}>
-        <Text style={[styles.errorActionText, { color: theme.textTertiary }]}>Try again</Text>
+        <Text style={[styles.errorActionText, { color: theme.textTertiary }]}>{t("repoList.retryButton")}</Text>
       </TouchableOpacity>
     </View>
   )
@@ -94,10 +96,10 @@ const RepoListScreen = () => {
   const renderEmpty = () => (
     <View style={styles.error}>
       <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
-        No repositories found
+        {t("repoList.emptyHeading")}
       </Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
-        We couldn't find any repositories matching your criteria.
+        {t("repoList.emptyBody")}
       </Text>
     </View>
   )
@@ -143,10 +145,10 @@ const RepoListScreen = () => {
 
   const renderListHeader = () => (
     <View style={styles.listHeader}>
-      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>Search repositories:</Text>
+      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>{t("repoList.searchLabel")}</Text>
       <View style={styles.inputContainer}>
         <TextInput
-          placeholder="Search repositories..."
+          placeholder={t("repoList.searchPlaceholder")}
           value={search}
           onChangeText={setSearch}
           style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
@@ -180,7 +182,7 @@ const RepoListScreen = () => {
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
       {shouldShowNetworkBanner ? (
-        <Banner message="Network error, please check your connection" />
+        <Banner message={t("repoList.networkError")} />
       ) : null}
 
       {renderListHeader()}

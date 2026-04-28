@@ -1,5 +1,6 @@
 import { TouchableOpacity, Text } from "react-native"
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
+import { useTranslation } from "react-i18next"
 
 import RepoListScreen from "@/screens/RepoListScreen"
 import RepoDetailsScreen from "@/screens/RepoDetailsScreen"
@@ -13,6 +14,7 @@ import { RootStackParamList } from "@/types/navigation"
 const Stack = createNativeStackNavigator<RootStackParamList>()
 
 export default function Navigation() {
+  const { t } = useTranslation()
   const { theme, resolvedMode, setMode } = useTheme()
   const { token, logout } = useAuth()
 
@@ -39,7 +41,7 @@ export default function Navigation() {
         <Stack.Screen
           name="Login"
           component={LoginScreen}
-          options={{ ...sharedOptions, title: "Sign in", animationTypeForReplace: "pop" }}
+          options={{ ...sharedOptions, title: t("navigation.signIn"), animationTypeForReplace: "pop" }}
         />
       ) : (
         <>
@@ -48,10 +50,10 @@ export default function Navigation() {
             component={RepoListScreen}
             options={{
               ...sharedOptions,
-              title: "Repositories",
+              title: t("navigation.repositories"),
               headerLeft: () => (
                 <TouchableOpacity onPress={logout} style={{ alignItems: "center", justifyContent: "center", height: 40, paddingHorizontal: 8 }}>
-                  <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textSecondary }}>Sign out</Text>
+                  <Text style={{ fontSize: 14, fontWeight: "600", color: theme.textSecondary }}>{t("navigation.signOut")}</Text>
                 </TouchableOpacity>
               ),
             }}

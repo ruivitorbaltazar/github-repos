@@ -1,3 +1,4 @@
+import "@/i18n"
 import { NavigationContainer } from "@react-navigation/native";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ThemeProvider } from "@/contexts/ThemeProvider"
