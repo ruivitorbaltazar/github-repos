@@ -26,7 +26,8 @@
     "unknownError": "Unknown error",
     "retryButton": "Try again",
     "emptyHeading": "No repositories found",
-    "emptyBody": "We couldn't find any repositories matching your criteria."
+    "emptyBody": "We couldn't find any repositories matching your criteria.",
+    "scrollToTopA11y": "Scroll to top"
   },
   "repoDetails": {
     "openOnGitHub": "Open on GitHub"

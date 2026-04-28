@@ -229,7 +229,7 @@ const RepoListScreen = () => {
         <TouchableOpacity
           onPress={() => repoListRef.current?.scrollToTop({ animated: true })}
           style={styles.fabInner}
-          accessibilityLabel="Scroll to top"
+          accessibilityLabel={t("repoList.scrollToTopA11y")}
           accessibilityRole="button"
         >
           <Text style={styles.fabText}>↑</Text>
