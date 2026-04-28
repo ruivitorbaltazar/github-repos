@@ -43,14 +43,11 @@ describe("useRepoList", () => {
     }
   })
 
-  it("transitions to error with isNetworkError=true on network error", async () => {
+  it("transitions to networkError on Network Error rejection", async () => {
     ;(fetchRepositories as jest.Mock).mockRejectedValue(new Error("Network Error"))
     ;(fetchUserLanguages as jest.Mock).mockResolvedValue([])
     const { result } = renderHook(() => useRepoList(), { wrapper: buildWrapper() })
-    await waitFor(() => expect(result.current.state.async.kind).toBe("error"))
-    if (result.current.state.async.kind === "error") {
-      expect(result.current.state.async.isNetworkError).toBe(true)
-    }
+    await waitFor(() => expect(result.current.state.async.kind).toBe("networkError"))
   })
 
   it("setSearch updates state", () => {
@@ -59,5 +56,25 @@ describe("useRepoList", () => {
     const { result } = renderHook(() => useRepoList(), { wrapper: buildWrapper() })
     act(() => result.current.actions.setSearch("react"))
     expect(result.current.state.search).toBe("react")
+  })
+
+  it("toggleLanguage selects a language and reverts to default when re-selected", () => {
+    ;(fetchRepositories as jest.Mock).mockResolvedValue({ items: [], total_count: 0, page: 1 })
+    ;(fetchUserLanguages as jest.Mock).mockResolvedValue([])
+    const { result } = renderHook(() => useRepoList(), { wrapper: buildWrapper() })
+    expect(result.current.state.language).toBe("typescript")
+    act(() => result.current.actions.toggleLanguage("Python"))
+    expect(result.current.state.language).toBe("python")
+    act(() => result.current.actions.toggleLanguage("Python"))
+    expect(result.current.state.language).toBe("typescript")
+  })
+
+  it("retry triggers a refetch", async () => {
+    ;(fetchRepositories as jest.Mock).mockResolvedValue({ items: [], total_count: 0, page: 1 })
+    ;(fetchUserLanguages as jest.Mock).mockResolvedValue([])
+    const { result } = renderHook(() => useRepoList(), { wrapper: buildWrapper() })
+    await waitFor(() => expect(fetchRepositories).toHaveBeenCalledTimes(1))
+    act(() => result.current.actions.retry())
+    await waitFor(() => expect(fetchRepositories).toHaveBeenCalledTimes(2))
   })
 })
