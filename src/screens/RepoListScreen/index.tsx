@@ -1,22 +1,17 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import {
   View,
   Text,
   TextInput,
   FlatList,
   TouchableOpacity,
-  NativeSyntheticEvent,
-  NativeScrollEvent,
 } from "react-native"
 import { useTranslation } from "react-i18next"
 import { FlashList, FlashListRef } from "@shopify/flash-list"
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from "react-native-reanimated"
-import { useNavigation } from "@react-navigation/native"
-import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import Animated from "react-native-reanimated"
 
-import { useRepositories } from "@/hooks/useRepositories"
-import { useLanguages } from "@/hooks/useLanguages"
 import { useTheme } from "@/hooks/useTheme"
+import { useRepoList } from "./useRepoList"
 
 import { RepoCard } from "@/components/RepoCard"
 import { RepoCardSkeleton } from "@/components/RepoCardSkeleton"
@@ -24,70 +19,24 @@ import { Banner } from "@/components/Banner"
 import { Chip } from "@/components/Chip"
 
 import { Repository } from "@/types/repository"
-import { RootStackParamList } from "@/types/navigation"
 
 import { styles } from "./styles"
-
-type NavigationProp = NativeStackNavigationProp<
-  RootStackParamList,
-  "RepoList"
->
 
 const RepoListScreen = () => {
   const { t } = useTranslation()
   const { theme } = useTheme()
-
-  const [search, setSearch] = useState("")
-  const [language, setLanguage] = useState("typescript")
-
-  const [shouldShowNetworkBanner, setShouldShowNetworkBanner] = useState(false)
-
-  const { languages, languagesLoading } = useLanguages()
-
-  const {
-    reposData,
-    reposAreFetching,
-    reposFetchingNextPage,
-    reposError,
-    fetchNextPage,
-    hasNextPage,
-    refetch,
-    isRefetching,
-  } = useRepositories({ search, language })
-
-  const navigation = useNavigation<NavigationProp>()
+  const { state, actions } = useRepoList()
+  const { async: asyncStatus, search, language, languages, isRefreshing, fab } = state
 
   const chipsRef = useRef<FlatList<string> | null>(null)
   const repoListRef = useRef<FlashListRef<Repository> | null>(null)
-  const fabOpacity = useSharedValue(0)
-  const [fabVisible, setFabVisible] = useState(false)
-
-  const fabAnimatedStyle = useAnimatedStyle(() => ({
-    opacity: fabOpacity.value,
-  }))
-
-  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const y = event.nativeEvent.contentOffset.y
-    const shouldShow = y > 300
-    fabOpacity.value = withTiming(shouldShow ? 1 : 0, { duration: 200 })
-    setFabVisible(shouldShow)
-  }
 
   useEffect(() => {
-    if (!languages.length) return
-    const index = languages.findIndex((l) => l.toLowerCase() === language)
+    if (languages.status !== "ready" || !languages.items.length) return
+    const index = languages.items.findIndex((l) => l.toLowerCase() === language)
     if (index < 0) return
     chipsRef.current?.scrollToIndex({ index, animated: true, viewPosition: 0 })
   }, [language, languages])
-
-  useEffect(() => {
-    if (reposError && reposError.message === "Network Error") {
-      console.log('network error!');
-      setShouldShowNetworkBanner(true)
-    } else {
-      setShouldShowNetworkBanner(false)
-    }
-  }, [reposError])
 
   const renderLoading = () => (
     <>
@@ -95,7 +44,7 @@ const RepoListScreen = () => {
     </>
   )
 
-  const renderError = () => (
+  const renderError = (message: string) => (
     <View style={styles.error}>
       <Text style={[styles.errorTitle, { color: theme.textPrimary }]}>
         {t("repoList.errorHeading")}
@@ -104,10 +53,9 @@ const RepoListScreen = () => {
         {t("repoList.errorBody")}
       </Text>
       <Text style={[styles.errorBody, { color: theme.textSecondary }]}>
-        "{reposError?.message || t("repoList.unknownError")}"
+        "{message}"
       </Text>
-      {/* TODO: Implement retry logic */}
-      <TouchableOpacity style={styles.errorAction} onPress={() => console.log("Trying again")}>
+      <TouchableOpacity style={styles.errorAction} onPress={actions.retry}>
         <Text style={[styles.errorActionText, { color: theme.textTertiary }]}>{t("repoList.retryButton")}</Text>
       </TouchableOpacity>
     </View>
@@ -124,42 +72,29 @@ const RepoListScreen = () => {
     </View>
   )
 
-  const renderCard = ({ item }: { item: Repository }) => {
-    const {
-      name,
-      description,
-      language,
-      stargazers_count,
-      owner,
-    } = item
+  const renderCard = ({ item }: { item: Repository }) => (
+    <RepoCard
+      name={item.name}
+      description={item.description}
+      language={item.language}
+      stars={item.stargazers_count}
+      owner={{ login: item.owner.login, avatar_url: item.owner.avatar_url }}
+      onPress={() => actions.openRepo(item)}
+    />
+  )
 
-    return (
-      <RepoCard
-        name={name}
-        description={description}
-        language={language}
-        stars={stargazers_count}
-        owner={{ login: owner.login, avatar_url: owner.avatar_url }}
-        onPress={() => navigation.navigate("RepoDetails", { repo: item })}
-      />
-    )
-  }
-
-  const renderChip = ({ item: lang }: { item: string }) => {
-    const isSelected = language === lang.toLowerCase()
-    return (
-      <Chip
-        label={lang}
-        isSelected={isSelected}
-        onPress={() => setLanguage(isSelected ? "typescript" : lang.toLowerCase())}
-      />
-    )
-  }
+  const renderChip = ({ item: lang }: { item: string }) => (
+    <Chip
+      label={lang}
+      isSelected={language === lang.toLowerCase()}
+      onPress={() => actions.toggleLanguage(lang)}
+    />
+  )
 
   const renderListContent = () => {
-    if (reposAreFetching) return renderLoading()
-    if (reposError && reposError.message !== "Network Error") return renderError()
-    if (!reposData || reposData.length === 0) return renderEmpty()
+    if (asyncStatus.kind === "loading") return renderLoading()
+    if (asyncStatus.kind === "error") return renderError(asyncStatus.message)
+    if (asyncStatus.kind === "empty") return renderEmpty()
     return null
   }
 
@@ -170,21 +105,21 @@ const RepoListScreen = () => {
         <TextInput
           placeholder={t("repoList.searchPlaceholder")}
           value={search}
-          onChangeText={setSearch}
+          onChangeText={actions.setSearch}
           style={[styles.input, { backgroundColor: theme.bgTertiary, color: theme.textPrimary }]}
         />
         {search ? (
-          <TouchableOpacity onPress={() => setSearch("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
+          <TouchableOpacity onPress={() => actions.setSearch("")} style={[styles.clearButton, { backgroundColor: theme.bgSecondary }]}>
             <Text style={[styles.clearButtonText, { color: theme.textTertiary }]}>╳</Text>
           </TouchableOpacity>
         ) : null}
       </View>
 
-      {!languagesLoading && languages.length > 0 && (
+      {languages.status === "ready" && languages.items.length > 0 && (
         <FlatList
           ref={chipsRef}
           horizontal
-          data={languages}
+          data={languages.items}
           keyExtractor={(item) => item}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.chipsRow}
@@ -199,9 +134,12 @@ const RepoListScreen = () => {
     </View>
   )
 
+  const listData = asyncStatus.kind === "success" ? asyncStatus.repos : []
+  const isFetchingMore = asyncStatus.kind === "success" && asyncStatus.isFetchingMore
+
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
-      {shouldShowNetworkBanner ? (
+      {asyncStatus.kind === "networkError" ? (
         <Banner message={t("repoList.networkError")} />
       ) : null}
 
@@ -209,25 +147,26 @@ const RepoListScreen = () => {
 
       <FlashList
         ref={repoListRef}
-        data={reposAreFetching || reposError || !reposData?.length ? [] : reposData}
+        style={styles.repoList}
+        data={listData}
         keyExtractor={(item) => item.id.toString()}
         renderItem={renderCard}
         ListEmptyComponent={renderListContent}
-        onEndReached={() => { if (hasNextPage && !reposFetchingNextPage) fetchNextPage() }}
+        ListFooterComponent={isFetchingMore ? <RepoCardSkeleton /> : null}
+        onEndReached={actions.loadMore}
         onEndReachedThreshold={0.5}
-        ListFooterComponent={reposFetchingNextPage ? <RepoCardSkeleton /> : null}
-        onScroll={handleScroll}
+        onScroll={actions.onScroll}
         scrollEventThrottle={16}
-        refreshing={isRefetching}
-        onRefresh={refetch}
+        refreshing={isRefreshing}
+        onRefresh={actions.refresh}
       />
 
       <Animated.View
-        style={[styles.fab, fabAnimatedStyle]}
-        pointerEvents={fabVisible ? "auto" : "none"}
+        style={[styles.fab, fab.animatedStyle]}
+        pointerEvents={fab.visible ? "auto" : "none"}
       >
         <TouchableOpacity
-          onPress={() => repoListRef.current?.scrollToTop({ animated: true })}
+          onPress={() => actions.scrollToTop(repoListRef.current)}
           style={styles.fabInner}
           accessibilityLabel={t("repoList.scrollToTopA11y")}
           accessibilityRole="button"

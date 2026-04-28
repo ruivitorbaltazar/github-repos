@@ -1,50 +1,19 @@
-import { useState } from "react"
 import { View, Text, TextInput, TouchableOpacity, ActivityIndicator } from "react-native"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "@/hooks/useTheme"
-import { useAuth } from "@/hooks/useAuth"
-import { validateToken } from "@/services/github/auth"
+import { useLogin } from "./useLogin"
 import { styles } from "./styles"
 
 const LoginScreen = () => {
   const { t } = useTranslation()
   const { theme } = useTheme()
-  const { login, loginViaAuth0 } = useAuth()
+  const { state, actions } = useLogin()
+  const { flow, token, showToken } = state
 
-  const [token, setToken] = useState("")
-  const [isPATLoading, setIsPATLoading] = useState(false)
-  const [isAuth0Loading, setIsAuth0Loading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [showToken, setShowToken] = useState(false)
-
-  const handlePATLogin = async () => {
-    if (!token.trim()) return
-    setIsPATLoading(true)
-    setError(null)
-    try {
-      await validateToken(token.trim())
-      await login(token.trim())
-    } catch {
-      setError(t("login.invalidToken"))
-    } finally {
-      setIsPATLoading(false)
-    }
-  }
-
-  const handleAuth0Login = async () => {
-    setIsAuth0Loading(true)
-    setError(null)
-    try {
-      await loginViaAuth0()
-    } catch (e) {
-      const message = e instanceof Error ? e.message : t("login.auth0Failed")
-      setError(message)
-    } finally {
-      setIsAuth0Loading(false)
-    }
-  }
-
-  const isAnyLoading = isPATLoading || isAuth0Loading
+  const isPATLoading = flow.kind === "submitting" && flow.method === "pat"
+  const isAuth0Loading = flow.kind === "submitting" && flow.method === "auth0"
+  const isAnyLoading = flow.kind === "submitting"
+  const errorMessage = flow.kind === "error" ? flow.message : null
 
   return (
     <View style={[styles.container, { backgroundColor: theme.bgPrimary }]}>
@@ -55,7 +24,7 @@ const LoginScreen = () => {
 
       <TouchableOpacity
         style={[styles.auth0Button, { borderColor: theme.bgTertiary }]}
-        onPress={handleAuth0Login}
+        onPress={actions.submitAuth0}
         disabled={isAnyLoading}
       >
         {isAuth0Loading ? (
@@ -77,28 +46,28 @@ const LoginScreen = () => {
       <View style={[styles.inputWrapper, { backgroundColor: theme.bgTertiary }]}>
         <TextInput
           value={token}
-          onChangeText={setToken}
-          placeholder={t("login.patPlaceholder")}
+          onChangeText={actions.setToken}
+          placeholder="github_pat_xxxxxxxxxxxx"
           secureTextEntry={!showToken}
           clearButtonMode="while-editing"
           autoCapitalize="none"
           autoCorrect={false}
           style={[styles.input, { color: theme.textPrimary }]}
         />
-        <TouchableOpacity onPress={() => setShowToken(v => !v)} style={styles.showHideButton}>
+        <TouchableOpacity onPress={actions.toggleShowToken} style={styles.showHideButton}>
           <Text style={{ color: theme.textSecondary, fontSize: 13 }}>
             {showToken ? t("login.hide") : t("login.show")}
           </Text>
         </TouchableOpacity>
       </View>
 
-      {error ? (
-        <Text style={[styles.error, { color: "#FF3B30" }]}>{error}</Text>
+      {errorMessage ? (
+        <Text style={[styles.error, { color: "#FF3B30" }]}>{errorMessage}</Text>
       ) : null}
 
       <TouchableOpacity
         style={styles.button}
-        onPress={handlePATLogin}
+        onPress={actions.submitPAT}
         disabled={isAnyLoading || !token.trim()}
       >
         {isPATLoading ? (
