@@ -1,4 +1,6 @@
 import Auth0 from "react-native-auth0"
+import { Auth0IdTokenPayloadSchema } from "@/schemas/auth0"
+import { parseOrThrow } from "@/schemas/parse"
 
 const auth0 = new Auth0({
   domain: process.env.EXPO_PUBLIC_AUTH0_DOMAIN!,
@@ -13,13 +15,8 @@ export const loginWithAuth0 = async (): Promise<string> => {
   // Decode the ID token payload to extract the GitHub access token.
   // Requires an Auth0 Action that sets the custom claim — see setup guide.
   const [, payload] = credentials.idToken.split(".")
-  const decoded = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")))
-  const githubToken = decoded["https://github.com/access_token"]
-
-  if (!githubToken) {
-    console.warn("[auth0] ID token claims present:", JSON.stringify(decoded))
-    throw new Error("GitHub token not found. Ensure the Auth0 Action is configured correctly.")
-  }
+  const decoded: unknown = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")))
+  const { githubToken } = parseOrThrow(Auth0IdTokenPayloadSchema, decoded, "auth0/id-token")
 
   return githubToken
 }
