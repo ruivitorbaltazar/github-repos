@@ -7,7 +7,13 @@ export const fetchUserLanguages = async (): Promise<string[]> => {
     params: { per_page: 100, sort: "updated" },
   })
 
-  const repos = parseOrThrow(UserReposResponseSchema, response.data, "github/user/repos")
+  let repos
+  try {
+    repos = parseOrThrow(UserReposResponseSchema, response.data, "github/user/repos")
+  } catch (e) {
+    console.warn("[fetchUserLanguages] schema validation failed", e)
+    return ["TypeScript"] // return default language
+  }
 
   const counts: Record<string, number> = {}
   for (const repo of repos) {
